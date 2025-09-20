@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 画面全体のスクロール挙動補助 */
+html, body, #__next {
+  height: 100%;
+}

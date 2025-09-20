@@ -1,9 +1,19 @@
-node_modules
+# build / deps
+.next/
+out/
+dist/
+build/
+node_modules/
 
-/generated/prisma
-
-.next
+# env / logs / editor
 .env
+*.log
+.vscode/
+.idea/
 
-.next
-.env
+# misc
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+turbo/

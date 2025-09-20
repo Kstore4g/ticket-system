@@ -1,186 +1,96 @@
-import { useMemo, useState } from "react";
-import { LayoutGroup, motion, AnimatePresence } from "framer-motion";
-import TopBar, { Payment, methods } from "../components/TopBar";
-import CategoryDock, { Category } from "../components/CategoryDock";
-import ProductCard, { Product } from "../components/ProductCard";
+import { useState } from "react";
+import TopBar from "../components/TopBar";
+import CategoryDock from "../components/CategoryDock";
+import ProductCard from "../components/ProductCard";
 import CartPanel from "../components/CartPanel";
-import useClickSound from "../hooks/useClickSound";
+import SlideToConfirm from "../components/SlideToConfirm";
 
-const icons: Record<Payment, string> = { CARD: "💳", QR: "📱", CASH: "💴" };
-
-const categories: Category[] = [
-  { id: 1, name: "セットメニュー", emoji: "🍱" },
-  { id: 2, name: "単品",         emoji: "🍔" },
-  { id: 3, name: "ドリンク",     emoji: "🥤" },
+const payments = [
+  { id: "cash", label: "現金" },
+  { id: "card", label: "カード" },
+  { id: "code", label: "QR" },
 ];
 
-// ダミー商品
-const productsByCategory: Record<number, Product[]> = {
-  1: [
-    { id: 101, name: "Aセット（バーガー＋ポテト＋ドリンク）", price: 850, allergens: ["小麦", "乳"], emoji: "🍔" },
-    { id: 102, name: "Bセット（チキン＋サラダ＋ドリンク）",   price: 920, allergens: ["卵"],       emoji: "🍗" },
-  ],
-  2: [
-    { id: 201, name: "チーズバーガー", price: 380, allergens: ["小麦", "乳"], emoji: "🧀" },
-    { id: 202, name: "フライドポテト", price: 260, allergens: [],             emoji: "🍟" },
-    { id: 203, name: "からあげ",       price: 320, allergens: ["小麦"],       emoji: "🍗" },
-  ],
-  3: [
-    { id: 301, name: "コーラ",     price: 200, allergens: [], emoji: "🥤" },
-    { id: 302, name: "オレンジ",   price: 200, allergens: [], emoji: "🧃" },
-    { id: 303, name: "ホットコーヒー", price: 250, allergens: [], emoji: "☕" },
-  ],
-};
+const categories = [
+  { id: "set", name: "セットメニュー" },
+  { id: "single", name: "単品" },
+  { id: "drink", name: "ドリンク" },
+];
 
-function getCirclePosition(index: number, total: number, radius: number) {
-  const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
-  return { x: radius * Math.cos(angle), y: radius * Math.sin(angle) };
-}
-
-const SPRING = { type: "spring", mass: 0.7, stiffness: 300, damping: 22, restDelta: 0.001 };
-const ENTER_SPRING = { type: "spring", stiffness: 160, damping: 18, mass: 0.8 };
+const products = [
+  { id: "p1", name: "チーズバーガー", price: 680, cat: "single" },
+  { id: "p2", name: "ダブルバーガー", price: 880, cat: "single" },
+  { id: "p3", name: "ポテトM", price: 290, cat: "single" },
+  { id: "p4", name: "コーラ", price: 200, cat: "drink" },
+  { id: "p5", name: "セットA", price: 980, cat: "set" },
+];
 
 export default function Home() {
-  const [payment, setPayment] = useState<Payment | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [cart, setCart] = useState<Record<number, number>>({});
-  const playClick = useClickSound(0.22); // ← クリック音
+  const [payment, setPayment] = useState<string | null>(null);
+  const [cat, setCat] = useState<string | null>(null);
+  const [lines, setLines] = useState<{ id: string; name: string; price: number; qty: number }[]>([]);
 
-  const allProductsMap = useMemo(() => {
-    const m = new Map<number, Product>();
-    Object.values(productsByCategory).flat().forEach(p => m.set(p.id, p));
-    return m;
-  }, []);
+  const visible = products.filter(p => !cat || p.cat === cat);
 
-  const cartItems = useMemo(() => {
-    return Object.entries(cart)
-      .filter(([, q]) => q > 0)
-      .map(([id, q]) => ({ product: allProductsMap.get(Number(id))!, qty: q }));
-  }, [cart, allProductsMap]);
+  function add(id: string) {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    setLines(prev => {
+      const i = prev.findIndex(l => l.id === id);
+      if (i >= 0) {
+        const next = [...prev]; next[i] = { ...next[i], qty: next[i].qty + 1 }; return next;
+      }
+      return [...prev, { id, name: p.name, price: p.price, qty: 1 }];
+    });
+  }
 
-  const radius = 150;
+  function inc(id: string) { setLines(prev => prev.map(l => l.id===id ? { ...l, qty: l.qty+1 } : l)); }
+  function dec(id: string) { setLines(prev => prev.map(l => l.id===id ? { ...l, qty: Math.max(0, l.qty-1) } : l).filter(l => l.qty>0)); }
 
-  const inc = (id: number) => setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
-  const dec = (id: number) => setCart((c) => ({ ...c, [id]: Math.max(0, (c[id] ?? 0) - 1) }));
-
-  const onConfirm = () => {
-    const total = cartItems.reduce((s, it) => s + it.product.price * it.qty, 0);
-    alert(`注文を確定しました。\n支払い方法：${payment ?? "未選択"}\n合計：¥${total.toLocaleString()}\n→ 精算へ進みます`);
-    // TODO: 精算ページへ遷移 / API 呼び出し
-  };
-
-  return (
-    <LayoutGroup>
-      <div className="min-h-screen bg-gray-100 px-4 py-3">
-
-        {/* 支払い選択（初回のみ中央） */}
-        <AnimatePresence>
-          {payment === null && (
-            <motion.div
-              key="center-pay"
-              className="min-h-[40vh] flex items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <div className="flex items-center gap-8">
-                {methods.map((m) => (
-                  <motion.button
-                    key={m}
-                    layoutId={`pay-${m}`}
-                    transition={SPRING}
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.95 }}
-                    type="button"
-                    onClick={() => { playClick(); setPayment(m); }}  // ← 音＋選択
-                    className="w-20 h-20 rounded-full bg-white text-black text-2xl shadow-lg border border-gray-300 focus:outline-none"
-                    title={m}
-                  >
-                    {icons[m]}
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* カテゴリ未選択：中央に円（ズレ防止） */}
-        {payment !== null && selectedCategory === null && (
-          <div className="mt-2 flex justify-center">
-            <motion.div
-              key="circle"
-              className="relative w-[520px] h-[520px]"
-              initial={{ y: 120, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 120, opacity: 0 }}
-              transition={ENTER_SPRING}
-            >
-              {categories.map((cat, i, arr) => {
-                const { x, y } = getCirclePosition(i, arr.length, 170);
-                return (
-                  <div
-                    key={cat.id}
-                    className="absolute"
-                    style={{
-                      left: "50%",
-                      top: "50%",
-                      transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`,
-                    }}
-                  >
-                    <motion.button
-                      layoutId={`cat-${cat.id}`} // 左ドックへ移動
-                      onClick={() => setSelectedCategory(cat.id)}
-                      whileHover={{ scale: 1.06 }}
-                      whileTap={{ scale: 0.96 }}
-                      className="w-28 h-28 rounded-full bg-white text-black shadow-lg border border-gray-200 font-semibold text-lg"
-                    >
-                      <div className="text-4xl">{cat.emoji}</div>
-                      <div className="text-xs mt-1 text-gray-700">{cat.name}</div>
-                    </motion.button>
-                  </div>
-                );
-              })}
-            </motion.div>
+  // 支払い/カテゴリ未選択時：中央に大きいアイコン横並び（簡易）
+  if (!payment || !cat) {
+    return (
+      <div className="h-screen flex flex-col">
+        <TopBar payments={payments} onSelect={setPayment} />
+        <div className="flex-1 min-h-0 flex items-center justify-center">
+          <div className="flex gap-4">
+            {(!payment ? payments : categories).map((x: any) => (
+              <button
+                key={x.id}
+                className="text-2xl px-6 py-10 border rounded-3xl hover:shadow"
+                onClick={() => payment ? setCat(x.id) : setPayment(x.id)}
+              >
+                {"label" in x ? x.label : x.name}
+              </button>
+            ))}
           </div>
-        )}
-
-        {/* カテゴリ選択後：3カラム（左ドック／中央リスト／右：支払いバー＋注文） */}
-        {payment !== null && selectedCategory !== null && (
-          <div className="grid grid-cols-[100px,1fr,400px] gap-8 mt-2">
-            {/* 左：ドック（上詰め） */}
-            <div className="pt-1">
-              <CategoryDock
-                categories={categories}
-                selectedId={selectedCategory}
-                onSelect={setSelectedCategory}
-              />
-            </div>
-
-            {/* 中央：商品リスト（上詰め、タブレット大きめ） */}
-            <div className="space-y-4">
-              {(productsByCategory[selectedCategory] ?? []).map((p) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  qty={cart[p.id] ?? 0}
-                  onAdd={() => inc(p.id)}
-                />
-              ))}
-            </div>
-
-            {/* 右：支払いバー（上）＋ 注文パネル（下） */}
-            <div className="pt-1 space-y-3">
-              <TopBar payment={payment} onChange={setPayment} />
-              <CartPanel
-                items={cartItems}
-                onInc={(id) => inc(id)}
-                onDec={(id) => dec(id)}
-                onConfirm={onConfirm}
-              />
-            </div>
-          </div>
-        )}
+        </div>
       </div>
-    </LayoutGroup>
+    );
+  }
+
+  // 3カラム安定（左：カテゴリ / 中央：商品 / 右：注文）
+  return (
+    <div className="h-screen flex flex-col">
+      <TopBar payments={payments} onSelect={setPayment} />
+      <div className="flex-1 min-h-0 flex">
+        {/* 左：カテゴリ（縦スクロール） */}
+        <CategoryDock categories={categories} selectedId={cat} onSelect={setCat} />
+
+        {/* 中央：商品リスト（flex-1 min-h-0 overflow-y-auto） */}
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 grid grid-cols-2 gap-3">
+          {visible.map(p => (
+            <ProductCard key={p.id} name={p.name} price={p.price} onAdd={()=>add(p.id)}
+              qty={lines.find(l => l.id===p.id)?.qty} />
+          ))}
+        </main>
+
+        {/* 右：注文（縦スクロール + 下部 sticky 合計） */}
+        <CartPanel lines={lines} onInc={inc} onDec={dec} />
+      </div>
+
+      {/* 右下固定のスライドボタン（簡易） */}
+      <SlideToConfirm onConfirm={()=>console.log("confirmed")} />
+    </div>
   );
 }
