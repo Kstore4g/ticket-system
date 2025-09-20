@@ -1,7 +1,14 @@
+"use client";
 import React from "react";
+import { motion } from "framer-motion";
+import useSfxHowler from "../hooks/useSfxHowler";
 
-type Payment = "CARD" | "QR" | "CASH";
+export type Payment = "CARD" | "QR" | "CASH";
+export const methods: Payment[] = ["CARD", "QR", "CASH"];
 const icons: Record<Payment, string> = { CARD: "💳", QR: "📱", CASH: "💴" };
+const labels: Record<Payment, string> = { CARD: "カード", QR: "QR", CASH: "現金" };
+
+const SPRING = { type: "spring", mass: 0.6, stiffness: 320, damping: 24, restDelta: 0.001 };
 
 export default function TopBar({
   payment,
@@ -10,27 +17,36 @@ export default function TopBar({
   payment: Payment | null;
   onChange: (p: Payment) => void;
 }) {
-  const all: Payment[] = ["CARD", "QR", "CASH"];
+  if (payment === null) return null;
+  const { playKey } = useSfxHowler();
+
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-gray-900 shadow">
-      <div className="max-w-screen-xl mx-auto px-4 py-2 flex items-center justify-center gap-3">
-        {all.map((m) => (
-          <button
+    <div className="w-full px-2 pb-2 flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        {methods.map((m) => (
+          <motion.button
             key={m}
+            layoutId={`pay-${m}`}
+            transition={SPRING}
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.96 }}
             type="button"
-            onClick={() => onChange(m)}
+            onClick={() => { playKey("mid"); onChange(m); }}
             aria-pressed={payment === m}
-            className={`px-4 py-2 rounded-md font-semibold flex items-center gap-2 border transition ${
+            title={m}
+            className={`w-16 h-16 rounded-full flex items-center justify-center border text-2xl transition-colors ${
               payment === m
                 ? "bg-yellow-400 text-black border-yellow-500 ring-2 ring-yellow-300"
-                : "bg-gray-800 text-white border-gray-700 hover:bg-gray-700"
+                : "bg-white text-black border-gray-300 hover:bg-gray-50"
             }`}
-            title={m}
           >
-            <span className="text-lg">{icons[m]}</span>
-            <span className="tracking-wide">{m}</span>
-          </button>
+            {icons[m]}
+          </motion.button>
         ))}
+      </div>
+      <div className="pl-2 text-gray-900 text-base">
+        <span className="opacity-80">現在の支払い方法：</span>
+        <span className="font-semibold">{labels[payment]}</span>
       </div>
     </div>
   );
