@@ -1,0 +1,167 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+type Product = { id: number; name: string; price: number; emoji?: string; image?: string | null };
+type CartItem = { product: Product; qty: number };
+
+type Props = {
+  items: CartItem[];
+  onInc: (id: number) => void;
+  onDec: (id: number) => void;
+  onConfirm: () => void;
+  getCategoryIcon?: (id: number) => string;
+  getProductIcon?: (p: Product) => React.ReactNode;
+};
+
+export default function CartPanel({ items, onInc, onDec, onConfirm, getCategoryIcon, getProductIcon }: Props) {
+  const total = useMemo(() => items.reduce((s, it) => s + it.product.price * it.qty, 0), [items]);
+
+  return (
+    <div className="rounded-2xl bg-white shadow p-3 flex flex-col">
+      <div className="font-semibold mb-2">注文</div>
+
+      {items.length === 0 ? (
+        <p className="text-sm opacity-70">選択した商品はまだありません</p>
+      ) : (
+        <ul className="space-y-2">
+          {items.map(({ product, qty }) => {
+            const iconNode =
+              (getProductIcon && getProductIcon(product)) ||
+              (product.image ? <img src={product.image} alt={product.name} className="w-full h-full object-cover" /> : null);
+
+            return (
+              <li key={product.id} className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  {/* 左端アイコン：写真 > 絵文字 > カテゴリ絵文字 */}
+                  <div className="w-7 h-7 rounded-full bg-gray-100 grid place-items-center text-lg shrink-0 overflow-hidden">
+                    {iconNode ? iconNode : <span>{product.emoji ?? (getCategoryIcon?.(product.id) ?? "🛍️")}</span>}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="truncate">{product.name}</div>
+                    <div className="text-xs opacity-70">¥{product.price.toLocaleString()}</div>
+                  </div>
+                </div>
+
+                {/* ± 小型（24px） */}
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    aria-label="dec"
+                    onClick={() => onDec(product.id)}
+                    className="w-6 h-6 rounded-full bg-gray-200 grid place-items-center text-xs leading-none select-none"
+                  >−</button>
+                  <span className="w-6 text-center tabular-nums">{qty}</span>
+                  <button
+                    aria-label="inc"
+                    onClick={() => onInc(product.id)}
+                    className="w-6 h-6 rounded-full bg-gray-200 grid place-items-center text-xs leading-none select-none"
+                  >＋</button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {/* 合計 */}
+      <div className="mt-3 flex items-center justify-between">
+        <div className="font-semibold">合計</div>
+        <div>¥{total.toLocaleString()}</div>
+      </div>
+
+      {/* 下部：スライドして決済（従来風の見た目） */}
+      <div className="mt-2">
+        <SlideToPay
+          disabled={items.length === 0}
+          labelEmpty="カートが空です"
+          labelReady="スライドして決済"
+          onConfirm={onConfirm}
+        />
+      </div>
+    </div>
+  );
+}
+
+/** 下部のスライダー。左の黒い丸ノブを右端までドラッグで確定 */
+function SlideToPay({
+  disabled,
+  labelEmpty,
+  labelReady,
+  onConfirm,
+}: {
+  disabled: boolean;
+  labelEmpty: string;
+  labelReady: string;
+  onConfirm: () => void;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const [posPx, setPosPx] = useState(0);          // ノブの左位置(px)
+  const [trackW, setTrackW] = useState(0);
+
+  const KNOB = 44;  // ノブ直径（px）…前と同等の見た目
+  const PAD  = 12;  // トラック左右の余白（px）
+  const maxX = Math.max(0, trackW - KNOB - PAD * 2);
+
+  useEffect(() => {
+    const r = () => setTrackW(trackRef.current?.getBoundingClientRect().width ?? 0);
+    r(); window.addEventListener("resize", r);
+    return () => window.removeEventListener("resize", r);
+  }, []);
+
+  useEffect(() => { if (disabled) setPosPx(0); }, [disabled]);
+
+  const pct = maxX === 0 ? 0 : posPx / maxX;
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (disabled) return;
+    setDragging(true);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging || !trackRef.current) return;
+    const rect = trackRef.current.getBoundingClientRect();
+    let x = e.clientX - rect.left - PAD - KNOB / 2; // 中心を掴んだ感覚に
+    x = Math.max(0, Math.min(x, maxX));
+    setPosPx(x);
+  };
+
+  const endDrag = () => {
+    if (!dragging) return;
+    setDragging(false);
+    if (pct >= 0.9) {
+      setPosPx(maxX);
+      onConfirm();
+      setTimeout(() => setPosPx(0), 250);
+    } else {
+      setPosPx(0);
+    }
+  };
+
+  return (
+    <div
+      ref={trackRef}
+      className={`relative h-14 rounded-2xl ${disabled ? "bg-gray-200 opacity-60" : "bg-gray-100"}`}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+    >
+      {/* 中央ラベル */}
+      <div className="absolute inset-0 grid place-items-center pointer-events-none text-sm text-gray-700">
+        {disabled ? labelEmpty : labelReady}
+      </div>
+
+      {/* 左の黒いノブ（▶） */}
+      <div
+        onPointerDown={onPointerDown}
+        className={`absolute top-1/2 -translate-y-1/2 rounded-full grid place-items-center text-white select-none shadow
+                    ${disabled ? "bg-gray-500" : "bg-black"}`}
+        style={{
+          width: KNOB, height: KNOB,
+          left: PAD + posPx, transition: dragging ? "none" : "left 140ms ease",
+        }}
+      >
+        ▶
+      </div>
+    </div>
+  );
+}
