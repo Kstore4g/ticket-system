@@ -28,6 +28,8 @@ export default function SlideToConfirm({
   // デザイン調整
   const KNOB = 32; // ノブ直径
   const PAD  = 10; // トラック左右の余白
+  const clamp = (v:number,min:number,max:number)=>Math.max(min,Math.min(v,max));
+
   const maxX = Math.max(0, trackW - KNOB - PAD * 2); // 枠内で収まる最大値
   const pct  = maxX === 0 ? 0 : posPx / maxX;
 
@@ -38,8 +40,6 @@ export default function SlideToConfirm({
   }, []);
   useEffect(() => { if (disabled) setPosPx(0); }, [disabled]);
 
-  const clamp = (v:number,min:number,max:number)=>Math.max(min,Math.min(v,max));
-
   const onPointerDown = (e: React.PointerEvent) => {
     if (disabled) return;
     setDragging(true);
@@ -48,14 +48,16 @@ export default function SlideToConfirm({
   const onPointerMove = (e: React.PointerEvent) => {
     if (!dragging || disabled) return;
     const rect = trackRef.current?.getBoundingClientRect(); if (!rect) return;
-    let x = e.clientX - rect.left - PAD - KNOB/2;      // ノブ中心をドラッグ
+    // ノブ中心をドラッグしている感覚
+    let x = e.clientX - rect.left - PAD - KNOB/2;
     setPosPx(clamp(x, 0, maxX));
   };
   const endDrag = () => {
     if (!dragging) return;
     setDragging(false);
     if (!disabled && pct >= 0.9) {
-      setPosPx(maxX); setTimeout(() => { try { onConfirm(); } finally { setPosPx(0); } }, 120);
+      setPosPx(maxX);
+      setTimeout(() => { try { onConfirm(); } finally { setPosPx(0); } }, 120);
     } else {
       setPosPx(0);
     }
@@ -69,16 +71,15 @@ export default function SlideToConfirm({
     if (e.key === "Enter" && pct >= 0.9) { onConfirm(); setPosPx(0); }
   };
 
-  const knobLeft = PAD + posPx;
-  const progWidth = posPx + KNOB/2;
+  const knobLeft = PAD + posPx;           // ノブの left
+  const progWidth = posPx + KNOB/2;       // プログレス幅（左余白からノブ中心）
 
   return (
     <div className="mt-1" data-slide-version="elegant-v1">
       <div
         ref={trackRef}
-        className={\`relative h-12 rounded-full bg-white/80 border border-gray-200 shadow-sm backdrop-blur \${disabled ? "opacity-60" : ""}\`}
-        role="slider"
-        aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct*100)}
+        className={`relative h-12 rounded-full bg-white/80 border border-gray-200 shadow-sm backdrop-blur ${disabled ? "opacity-60" : ""}`}
+        role="slider" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct*100)}
         tabIndex={0}
         onKeyDown={onKeyDown}
         onPointerMove={onPointerMove}
@@ -97,13 +98,15 @@ export default function SlideToConfirm({
         {/* ノブ（グラデ＋光沢、枠内フィット） */}
         <div
           onPointerDown={onPointerDown}
-          className={\`absolute top-1/2 -translate-y-1/2 rounded-full select-none touch-none ring-1 ring-black/10 \${disabled ? "bg-neutral-500" : "bg-gradient-to-b from-neutral-900 to-neutral-800"}\`}
+          className={`absolute top-1/2 -translate-y-1/2 rounded-full select-none touch-none ring-1 ring-black/10 ${disabled ? "bg-neutral-500" : "bg-gradient-to-b from-neutral-900 to-neutral-800"}`}
           style={{ width: KNOB, height: KNOB, left: knobLeft, transition: dragging ? "none" : "left 160ms ease",
                    boxShadow: "0 4px 10px rgba(0,0,0,0.15)" }}
           aria-label="slide knob"
         >
+          {/* 内側ハイライトで上品に */}
           <div className="absolute inset-0 rounded-full pointer-events-none"
                style={{ background: "radial-gradient(120% 100% at 50% 0%, rgba(255,255,255,0.25), rgba(255,255,255,0) 55%)" }} />
+          {/* シンプルな “›” アイコン */}
           <div className="w-full h-full grid place-items-center text-white text-base">›</div>
         </div>
       </div>
