@@ -58,7 +58,18 @@ export default function Home() {
       .map(([id, q]) => ({ product: allProductsMap.get(Number(id))!, qty: q }));
   }, [cart, allProductsMap]);
 
-  const radius = 150;
+    // Responsive radius to fit on any device (iPad/iPhone/desktop)
+  const [vw, setVw] = useState(0);
+  const [vh, setVh] = useState(0);
+  useEffect(() => {
+    const onResize = () => { setVw(window.innerWidth); setVh(window.innerHeight); };
+    onResize();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  const ICON = 96;   // 1個のカテゴリボタンの直径(px)に合わせて調整
+  const MARGIN = 24; // 画面端との安全マージン(px)
+  const radius = Math.max(72, Math.min(vw, vh) / 2 - ICON / 2 - MARGIN);
 
   const inc = (id: number) => setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
   const dec = (id: number) => setCart((c) => ({ ...c, [id]: Math.max(0, (c[id] ?? 0) - 1) }));
@@ -71,7 +82,7 @@ export default function Home() {
 
   return (
     <LayoutGroup>
-      <div className="min-min-h-[100svh] bg-gray-100 px-4 py-3">
+      <div className="min-h-[100svh] bg-gray-100 px-4 py-3">
 
         {/* 支払い選択（初回のみ中央） */}
         <AnimatePresence>
@@ -184,5 +195,6 @@ export default function Home() {
     </LayoutGroup>
   );
 }
+
 
 
