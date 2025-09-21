@@ -13,11 +13,11 @@ type Props = {
 };
 
 export default function CartPanel({ items, onInc, onDec, onConfirm, getCategoryIcon, getProductIcon }: Props) {
-  console.debug("CartPanel loaded: mobile-v4");
+  console.debug("CartPanel loaded: mobile-v3");
   const total = useMemo(() => items.reduce((s, it) => s + it.product.price * it.qty, 0), [items]);
 
   return (
-    <div className="rounded-2xl bg-white shadow p-3 flex flex-col gap-3" data-cartpanel="mobile-v4">
+    <div className="rounded-2xl bg-white shadow p-3 flex flex-col gap-3" data-cartpanel="mobile-v3">
       <div className="font-semibold">注文</div>
 
       {items.length === 0 ? (
@@ -88,7 +88,7 @@ function SlideToPay({ disabled, label, onConfirm }: { disabled: boolean; label: 
     const rect = track.getBoundingClientRect();
     const usable = rect.width - KNOB - PAD*2;
     if (usable <= 0) return;
-    let x = e.clientX - rect.left - PAD - KNOB/2; // ノブ中心をドラッグ
+    let x = e.clientX - rect.left - PAD - KNOB/2;
     x = Math.max(0, Math.min(x, usable));
     setPos(x/usable);
   };

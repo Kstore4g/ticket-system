@@ -1,0 +1,122 @@
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, animate } from "framer-motion";
+
+/**
+ * 左の丸ノブを右へ 90% 以上ドラッグすると確定。
+ * ・ノブ: 直径 40px（掴みやすく最小限）
+ * ・トラック: h-12 のピル型、中央にラベル
+ * ・pointer イベントで安定動作（モバイルOK）
+ */
+export default function SlideToConfirm({
+  onConfirm,
+  disabled = false,
+}: {
+  onConfirm: () => void;
+  disabled?: boolean;
+}) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const knobRef = useRef<HTMLDivElement | null>(null);
+
+  const x = useMotionValue(0);     // ノブの translateX
+  const [dragging, setDragging] = useState(false);
+
+  const KNOB = 40; // px
+  const PAD  = 12; // トラック左右の余白(px)
+
+  useEffect(() => {
+    // 無効化時は左へ戻す
+    if (disabled) animate(x, 0, { type: "spring", stiffness: 400, damping: 35 });
+  }, [disabled]);
+
+  const getMax = () => {
+    const track = trackRef.current;
+    const knob  = knobRef.current;
+    if (!track || !knob) return 0;
+    const max = track.clientWidth - knob.clientWidth - PAD * 2;
+    return Math.max(0, max);
+  };
+
+  const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(v, max));
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (disabled) return;
+    setDragging(true);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging || disabled) return;
+    const track = trackRef.current;
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
+    const usable = getMax();
+    if (usable <= 0) return;
+
+    // ノブ中心をドラッグしている感覚に
+    let nx = e.clientX - rect.left - PAD - KNOB / 2;
+    nx = clamp(nx, 0, usable);
+    x.set(nx);
+  };
+
+  const endDrag = () => {
+    if (!dragging) return;
+    setDragging(false);
+
+    const usable = getMax();
+    const current = x.get();
+    const reached = usable > 0 && current >= usable * 0.9; // 90% で確定
+
+    if (reached && !disabled) {
+      // 右端までスッとアニメ → 確定 → ちょい待って戻す
+      animate(x, usable, { type: "spring", stiffness: 420, damping: 34 });
+      setTimeout(() => {
+        try { onConfirm(); } finally {
+          animate(x, 0, { type: "spring", stiffness: 420, damping: 34 });
+        }
+      }, 120);
+    } else {
+      animate(x, 0, { type: "spring", stiffness: 420, damping: 34 });
+    }
+  };
+
+  return (
+    <div className="mt-1">
+      <div
+        ref={trackRef}
+        className={`relative h-12 rounded-full ${disabled ? "bg-gray-200 opacity-60" : "bg-gray-100"}`}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        role="slider"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round((x.get() / Math.max(1, getMax())) * 100)}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (disabled) return;
+          if (e.key === "ArrowRight") x.set(clamp(x.get() + 20, 0, getMax()));
+          if (e.key === "ArrowLeft")  x.set(clamp(x.get() - 20, 0, getMax()));
+          if (e.key === "Enter" && getMax() > 0 && x.get() >= getMax() * 0.9) {
+            onConfirm(); animate(x, 0, { type: "spring", stiffness: 420, damping: 34 });
+          }
+        }}
+      >
+        {/* 中央ラベル */}
+        <div className="absolute inset-0 grid place-items-center pointer-events-none text-sm text-gray-700">
+          {disabled ? "カートが空です" : "スライドして決済"}
+        </div>
+
+        {/* 左の黒い丸ノブ */}
+        <motion.div
+          ref={knobRef}
+          className={`absolute top-1/2 -translate-y-1/2 rounded-full shadow grid place-items-center text-white select-none touch-none ${disabled ? "bg-gray-500" : "bg-black"}`}
+          style={{ width: KNOB, height: KNOB, left: PAD, x }}
+          onPointerDown={onPointerDown}
+        >
+          ▶
+        </motion.div>
+      </div>
+    </div>
+  );
+}
