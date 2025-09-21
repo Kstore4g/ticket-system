@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useMemo, useState } from "react";
 import { LayoutGroup, motion, AnimatePresence } from "framer-motion";
 import TopBar, { Payment, methods } from "../components/TopBar";
@@ -195,6 +196,7 @@ export default function Home() {
     </LayoutGroup>
   );
 }
+
 
 
 

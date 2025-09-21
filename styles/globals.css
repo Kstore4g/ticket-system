@@ -16,3 +16,24 @@ html, body, #__next {
 body {
   overflow-x: hidden; /* 画面外へはみ出す横スクロールを抑制 */
 }
+/* === 3カラムで中央の長文が右カラムを押し出す問題のホットフィックス === */
+/* grid/flex の子要素が縮められず横にはみ出すのを防ぐ */
+.grid > *, .flex > * { min-width: 0; }
+
+/* 長い商品名があるときに強制的に折り返す（単語が長くてもOK） */
+li, .product-name, .item-title { overflow-wrap: anywhere; word-break: break-word; }
+
+/* iPadなどで右カラムを常に画面内に保持したい場合のユーティリティ（必要なら使う） */
+@media (min-width: 768px) {
+  .three-pane {
+    display: grid;
+    grid-template-columns: clamp(160px, 20vw, 240px) minmax(0, 1fr) clamp(260px, 28vw, 340px);
+    gap: 12px;
+  }
+  .pane-center { overflow: hidden; }
+  .pane-center > .scroll { 
+    overflow-y: auto; 
+    max-height: calc(100svh - var(--safe-top, 0px) - var(--safe-bottom, 0px) - 16px);
+  }
+  .pane-right { position: sticky; top: calc(var(--safe-top, 0px) + 8px); align-self: start; }
+}
