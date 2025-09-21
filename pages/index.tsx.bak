@@ -41,20 +41,7 @@ const productsByCategory: Record<number, Product[]> = {
 export default function Home() {
   const [payment, setPayment] = useState<Payment | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [cart, setCart] = useState<Record<number, number>>({}); // { productId: qty }  // 商品ID → カテゴリアイコン（絵文字）対応表
-  const productCategoryIcon = useMemo(() => {
-    const m = new Map<number, string>();
-    const localCats = [
-      { id: 1, emoji: "🍱" },
-      { id: 2, emoji: "🍔" },
-      { id: 3, emoji: "🥤" },
-    ];
-    for (const cat of localCats) {
-      const list = (productsByCategory as any)[cat.id] || [];
-      for (const p of list) m.set(p.id, cat.emoji);
-    }
-    return m;
-  }, []);
+  const [cart, setCart] = useState<Record<number, number>>({}); // { productId: qty }
 
   const inc = (id: number) => setCart(c => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
   const dec = (id: number) => setCart(c => ({ ...c, [id]: Math.max(0, (c[id] ?? 0) - 1) }));
@@ -72,9 +59,9 @@ export default function Home() {
   , [cart, allProducts]);
 
   const onConfirm = () => {
-  const total = cartItems.reduce((s, it) => s + it.product.price * it.qty, 0);
-  alert(`注文を確定しました。\n支払い方法：${payment ?? '未選択'}\n合計：¥${total.toLocaleString()}`);
-};
+    const total = cartItems.reduce((s, it) => s + it.product.price * it.qty, 0);
+    alert(\注文を確定しました。\n支払い方法：\\n合計：¥\\);
+  };
 
   return (
     <div className="min-h-[100svh] w-[100svw]">
@@ -172,6 +159,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-

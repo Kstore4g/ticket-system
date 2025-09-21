@@ -24,8 +24,8 @@ function useUiForcePatch() {
       s.textContent = `
 .three-pane{gap:2px !important}
 .pane-right .payment-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.pane-right .payment-row :where(button,[role="button"],a){width:36px;height:36px;border-radius:9999px;display:grid;place-items:center;padding:0}
-.pane-right .payment-row :where(svg,img){width:18px;height:18px}
+.pane-right .payment-row :where(button,[role="button"],a){width:44px;height:44px;border-radius:9999px;display:grid;place-items:center;padding:0}
+.pane-right .payment-row :where(svg,img){width:22px;height:22px}
 .make-qty-abs{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;font-weight:600;font-size:1.25rem;color:#16a34a}
 .no-dividers :where([class*='border-l'],[class*='divide-x']){border-left:0!important;border-left-width:0!important;border-right-width:0!important}
 .grid>* , .flex>* {min-width:0}
@@ -111,4 +111,3 @@ if (parent instanceof HTMLElement) {
     return () => mo.disconnect();
   }, []);
 }
-
