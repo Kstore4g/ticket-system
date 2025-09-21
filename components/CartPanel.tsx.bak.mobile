@@ -8,15 +8,16 @@ type Props = {
   onInc: (id: number) => void;
   onDec: (id: number) => void;
   onConfirm: () => void;
-  getCategoryIcon?: (id: number) => string;      // 互換のため残し（未使用でもOK）
+  getCategoryIcon?: (id: number) => string;   // 互換用
   getProductIcon?: (p: Product) => React.ReactNode;
 };
 
 export default function CartPanel({ items, onInc, onDec, onConfirm, getCategoryIcon, getProductIcon }: Props) {
+  console.debug("CartPanel loaded: mobile-v3");
   const total = useMemo(() => items.reduce((s, it) => s + it.product.price * it.qty, 0), [items]);
 
   return (
-    <div className="rounded-2xl bg-white shadow p-3 flex flex-col gap-3">
+    <div className="rounded-2xl bg-white shadow p-3 flex flex-col gap-3" data-cartpanel="mobile-v3">
       <div className="font-semibold">注文</div>
 
       {items.length === 0 ? (
@@ -31,7 +32,6 @@ export default function CartPanel({ items, onInc, onDec, onConfirm, getCategoryI
             return (
               <li key={product.id} className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
-                  {/* 左アイコン：写真 > 絵文字 > カテゴリ絵文字 */}
                   <div className="w-7 h-7 rounded-full bg-gray-100 grid place-items-center text-lg shrink-0 overflow-hidden">
                     {iconNode ? iconNode : <span>{product.emoji ?? (getCategoryIcon?.(product.id) ?? "🛍️")}</span>}
                   </div>
@@ -40,8 +40,6 @@ export default function CartPanel({ items, onInc, onDec, onConfirm, getCategoryI
                     <div className="text-xs opacity-70">¥{product.price.toLocaleString()}</div>
                   </div>
                 </div>
-
-                {/* ± 小型（24px） */}
                 <div className="flex items-center gap-1 shrink-0">
                   <button aria-label="dec" onClick={() => onDec(product.id)}
                           className="w-6 h-6 rounded-full bg-gray-200 grid place-items-center text-xs leading-none select-none active:scale-95">−</button>
@@ -55,13 +53,11 @@ export default function CartPanel({ items, onInc, onDec, onConfirm, getCategoryI
         </ul>
       )}
 
-      {/* 合計 */}
       <div className="flex items-center justify-between">
         <div className="font-semibold">合計</div>
         <div>¥{total.toLocaleString()}</div>
       </div>
 
-      {/* 下部：スライドして決済（スマホ向けミニマル） */}
       <SlideToPay
         disabled={items.length === 0}
         label={items.length === 0 ? "カートが空です" : "スライドして決済"}
@@ -71,14 +67,13 @@ export default function CartPanel({ items, onInc, onDec, onConfirm, getCategoryI
   );
 }
 
-/** 左の黒い丸ノブを右90%までドラッグで確定。シンプル＆おしゃれ */
 function SlideToPay({ disabled, label, onConfirm }: { disabled: boolean; label: string; onConfirm: () => void; }) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState(0);          // 0..1
+  const [pos, setPos] = useState(0);
   const [dragging, setDragging] = useState(false);
 
-  const KNOB = 40;   // ノブ直径（px）
-  const PAD  = 12;   // トラック左右余白（px）
+  const KNOB = 40;  // ノブ直径
+  const PAD  = 12;  // トラック左右余白
 
   useEffect(() => { if (disabled) setPos(0); }, [disabled]);
 
@@ -93,7 +88,7 @@ function SlideToPay({ disabled, label, onConfirm }: { disabled: boolean; label: 
     const rect = track.getBoundingClientRect();
     const usable = rect.width - KNOB - PAD*2;
     if (usable <= 0) return;
-    let x = e.clientX - rect.left - PAD - KNOB/2; // ノブ中心をドラッグ
+    let x = e.clientX - rect.left - PAD - KNOB/2;
     x = Math.max(0, Math.min(x, usable));
     setPos(x/usable);
   };
@@ -123,9 +118,7 @@ function SlideToPay({ disabled, label, onConfirm }: { disabled: boolean; label: 
           if (e.key === "Enter" && pos >= 0.9) { onConfirm(); setPos(0); }
         }}
       >
-        {/* 中央ラベル */}
         <div className="absolute inset-0 grid place-items-center pointer-events-none text-sm text-gray-700">{label}</div>
-        {/* 黒い丸ノブ */}
         <div
           onPointerDown={onPointerDown}
           className={`absolute top-1/2 -translate-y-1/2 rounded-full shadow grid place-items-center text-white select-none touch-none ${disabled ? "bg-gray-500" : "bg-black"}`}
