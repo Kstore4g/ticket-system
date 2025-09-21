@@ -1,0 +1,33 @@
+/**
+ * レイアウト数値の一元管理
+ * 各値の「どの UI に影響するか」を横コメントで明記
+ */
+export const LAYOUT = {
+  /* === フレーム === */
+  outerPaddingPx: 20,          // pages/index.tsx …… 画面の最外（上下左右）の余白（<div className="flex h-full"> の padding）
+  columnGapPx: 5,             // pages/index.tsx …… 左・中央・右カラム間の隙間（flex gap）
+
+  /* === カラム幅 === */
+  leftColWidthPx: 140,        // pages/index.tsx …… 左カラム <aside>（カテゴリエリア）の幅
+  rightColWidthPx: 300,       // pages/index.tsx …… 右カラム <aside>（注文パネル）の幅
+
+  /* === 中央リスト === */
+  listRowGapPx: 8,            // pages/index.tsx …… 中央の1行リストの縦間隔（flex-col gap）
+
+  /* === 商品行（画像・数量） === */
+  productImagePx: 48,         // components/ProductCard.tsx …… 商品画像/プレースホルダの縦横サイズ
+  qtyBadgeMinWidthPx: 28,     // components/ProductCard.tsx …… 行末の「現在個数」バッジの最小幅
+  qtyBadgeHeightPx: 28,       // components/ProductCard.tsx …… 行末の「現在個数」バッジの高さ
+
+  /* === カテゴリアイコン === */
+  categoryIconPx: 36,         // pages/index.tsx …… 左カラムの丸アイコン径（btn-radio-icon の width/height を style で上書き）
+  categoryIconGapPx: 12,      // pages/index.tsx …… カテゴリアイコンの並びの間隔（grid の gap）
+
+  /* === 支払い方法アイコン === */
+  payIconPx: 36,              // components/CartPanel.tsx …… 支払い方法アイコン径（btn-radio-icon の width/height を style で上書き）
+  paymentIconGapPx: 16,       // components/CartPanel.tsx …… 支払い方法アイコン同士の隙間（flex の gap）
+
+  /* === スライダー === */
+  slideKnobPx: 32,            // components/SlideToConfirm.tsx …… ノブ（黒丸）の直径
+  slideConfirmAt: 0.9,        // components/SlideToConfirm.tsx …… 確定閾値（0..1、0.9 = 90% 到達で確定）
+} as const;

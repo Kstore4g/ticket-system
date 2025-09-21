@@ -1,0 +1,177 @@
+import React, { useMemo, useState } from "react";
+import TopBar from "../components/TopBar";
+import CategoryDock from "../components/CategoryDock";
+import CartPanel from "../components/CartPanel";
+
+type Payment = "CARD" | "QR" | "CASH";
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  emoji?: string;
+  allergens?: string[];
+  image?: string | null; // 画像URL（なければ null/undefined）
+};
+
+const categories = [
+  { id: 1, name: "セットメニュー", emoji: "🍱" },
+  { id: 2, name: "単品",         emoji: "🍔" },
+  { id: 3, name: "ドリンク",     emoji: "🥤" },
+];
+
+// ★画像があるものは image: "/images/xxx.jpg" 等を入れてください
+const productsByCategory: Record<number, Product[]> = {
+  1: [
+    { id: 101, name: "Aセット（バーガー＋ポテト＋ドリンク）", price: 850, emoji: "🍔", allergens: ["小麦","乳"], image: null },
+    { id: 102, name: "Bセット（チキン＋サラダ＋ドリンク）",   price: 920, emoji: "🍗", allergens: ["卵"],       image: null },
+  ],
+  2: [
+    { id: 201, name: "チーズバーガー", price: 380, emoji: "🧀", allergens: ["小麦","乳"], image: null },
+    { id: 202, name: "フライドポテト", price: 260, emoji: "🍟", image: null },
+    { id: 203, name: "からあげ",       price: 320, emoji: "🍗", allergens: ["小麦"],      image: null },
+  ],
+  3: [
+    { id: 301, name: "コーラ",         price: 200, emoji: "🥤", image: null },
+    { id: 302, name: "オレンジ",       price: 200, emoji: "🟠", image: null },
+    { id: 303, name: "ホットコーヒー", price: 250, emoji: "☕", image: null },
+  ],
+};
+
+export default function Home() {
+  const [payment, setPayment] = useState<Payment | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [cart, setCart] = useState<Record<number, number>>({}); // { productId: qty }  // 商品ID → カテゴリアイコン（絵文字）対応表
+  const productCategoryIcon = useMemo(() => {
+    const m = new Map<number, string>();
+    const localCats = [
+      { id: 1, emoji: "🍱" },
+      { id: 2, emoji: "🍔" },
+      { id: 3, emoji: "🥤" },
+    ];
+    for (const cat of localCats) {
+      const list = (productsByCategory as any)[cat.id] || [];
+      for (const p of list) m.set(p.id, cat.emoji);
+    }
+    return m;
+  }, []);
+
+  const inc = (id: number) => setCart(c => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
+  const dec = (id: number) => setCart(c => ({ ...c, [id]: Math.max(0, (c[id] ?? 0) - 1) }));
+
+  const allProducts = useMemo(() => {
+    const m = new Map<number, Product>();
+    Object.values(productsByCategory).flat().forEach(p => m.set(p.id, p));
+    return m;
+  }, []);
+
+  const cartItems = useMemo(() =>
+    Object.entries(cart)
+      .filter(([, q]) => (q ?? 0) > 0)
+      .map(([id, q]) => ({ product: allProducts.get(Number(id))!, qty: q! as number }))
+  , [cart, allProducts]);
+
+  const onConfirm = () => {
+  const total = cartItems.reduce((s, it) => s + it.product.price * it.qty, 0);
+  alert(`注文を確定しました。\n支払い方法：${payment ?? '未選択'}\n合計：¥${total.toLocaleString()}`);
+};
+
+  return (
+    <div className="min-h-[100svh] w-[100svw]">
+      {/* 1) 支払い選択 */}
+      {payment === null && (
+        <div className="h-[100svh] grid place-items-center">
+          <div className="flex gap-6">
+            {(["CARD","QR","CASH"] as Payment[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setPayment(m)}
+                className="w-20 h-20 rounded-full bg-white text-black text-2xl shadow-lg border border-gray-300"
+                title={m}
+              >
+                {m === "CARD" ? "💳" : m === "QR" ? "📱" : "💴"}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 2) カテゴリ選択 */}
+      {payment !== null && selectedCategory === null && (
+        <div className="h-[100svh] grid place-items-center">
+          <div className="flex gap-8">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className="w-24 h-24 rounded-full bg-white text-black shadow-lg border border-gray-200 font-semibold text-lg"
+                title={cat.name}
+              >
+                <div className="text-3xl mb-1">{cat.emoji}</div>
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 3) 3カラム：中央＝説明エリア（タップで追加）／右＝注文エリア */}
+      {payment !== null && selectedCategory !== null && (
+        <div className="three-pane grid gap-[2px]">
+          {/* 左：カテゴリ */}
+          <aside className="pane-left p-1">
+            <CategoryDock
+              categories={categories}
+              selectedId={selectedCategory}
+              onSelect={(id) => setSelectedCategory(id)}
+            />
+          </aside>
+
+          {/* 中央：商品説明（写真/名/価格/アレルギーのみ）→ タップで追加 */}
+          <main className="pane-center">
+            <div className="inner mx-auto w-full max-w-[680px] px-2">
+              {(productsByCategory[selectedCategory] ?? []).map((p) => (
+                <div
+                  key={p.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => inc(p.id)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); inc(p.id); } }}
+                  className="bg-white text-black rounded-xl shadow p-3 mb-2 cursor-pointer hover:shadow-md active:scale-[0.99] transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 h-20 rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center shrink-0">
+                      {p.image ? (
+                        <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-3xl">{p.emoji ?? "🍽️"}</span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold truncate">{p.name}</div>
+                      <div className="text-sm opacity-80">¥{p.price.toLocaleString()}</div>
+                      {p.allergens?.length ? (
+                        <div className="text-xs mt-1 opacity-80">アレルゲン: {p.allergens.join("、")}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </main>
+
+          {/* 右：支払いバー + 注文パネル */}
+          <section className="pane-right space-y-2 sticky top-[calc(var(--safe-top,0px)+8px)] self-start">
+            <div className="payment-row">
+              <TopBar payment={payment} onChange={setPayment} />
+            </div>
+            <CartPanel items={cartItems} onInc={(id:number)=>inc(id)} onDec={(id:number)=>dec(id)} onConfirm={onConfirm} />
+          </section>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+

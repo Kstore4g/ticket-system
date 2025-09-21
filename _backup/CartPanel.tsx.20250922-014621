@@ -15,8 +15,6 @@ type CartPanelProps = {
   onChangePay: (id: string) => void;
 };
 
-const isUrl = (s?: string) => !!s && /^(https?:)?\/\//.test(s);
-
 export default function CartPanel({
   items, onInc, onDec, onConfirm,
   paymentMethods = [
@@ -54,18 +52,9 @@ export default function CartPanel({
                 >
                   <div
                     className={"btn-radio-icon " + (active ? "btn-radio-active" : "")}
-                    style={{ width: LAYOUT.payIconPx, height: LAYOUT.payIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
+                    style={{ width: LAYOUT.payIconPx, height: LAYOUT.payIconPx }}
                   >
-                    {isUrl(m.icon)
-                      ? <img src={m.icon!} alt={m.name} style={{
-                          width: LAYOUT.payIconInnerImagePx, height: LAYOUT.payIconInnerImagePx,
-                          transform: "translate(" + LAYOUT.payIconInnerOffsetXPx + "px," + LAYOUT.payIconInnerOffsetYPx + "px)"
-                        }} />
-                      : <span style={{
-                          fontSize: LAYOUT.payIconInnerFontPx,
-                          transform: "translate(" + LAYOUT.payIconInnerOffsetXPx + "px," + LAYOUT.payIconInnerOffsetYPx + "px)"
-                        }}>{m.icon ? m.icon : m.name[0]}</span>
-                    }
+                    {m.icon ? <span>{m.icon}</span> : <span>{m.name[0]}</span>}
                   </div>
                   <div className="btn-radio-label" style={{ fontSize: LAYOUT.paymentLabelPx }}>{m.name}</div>
                 </button>
@@ -100,7 +89,7 @@ export default function CartPanel({
                     aria-label={it.product.name + " を1つ減らす"}
                     style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
                   >−</button>
-                  <div className="text-center" style={{ width: LAYOUT.cartQtyWidthPx, fontSize: LAYOUT.cartQtyFontPx }}>{it.qty}</div>
+                  <div className="text-center" style={{ width: 24, fontSize: 12 }}>{it.qty}</div>
                   <button
                     type="button"
                     onClick={(e) => handleInc(e, it.product.id)}

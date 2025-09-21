@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ui patches (compact) */
+html, body, #__next { height: 100%; }
+:root { font-size: 14px; } /* やや小さめ */
+body { -webkit-tap-highlight-color: transparent; }

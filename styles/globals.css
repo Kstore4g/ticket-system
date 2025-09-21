@@ -1,277 +1,119 @@
-﻿@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* === iPad/iPhone safe-area & overflow guard === */
-:root {
-  --safe-top: env(safe-area-inset-top);
-  --safe-right: env(safe-area-inset-right);
-  --safe-bottom: env(safe-area-inset-bottom);
-  --safe-left: env(safe-area-inset-left);
+
+/* ===== font stacks (英/日 一括) ===== */
+:root{
+  --font-en: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-ja: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "YuGothic", Meiryo, "Noto Sans JP";
+
+  /* colors (ThemeProvider が上書き) */
+  --bg-app: #f5f5f7;
+  --text: #111827;
+  --text-muted: #6b7280;
+
+  --surface: #ffffff;
+  --surface-elev: #f3f4f6;
+  --border: rgba(0,0,0,0.08);
+
+  --chip-bg: #f3f4f6;
+  --chip-border: rgba(0,0,0,0.10);
+  --chip-text: #374151;
+
+  --radio-bg: #ffffff;
+  --accent: rgba(0,0,0,0.25);
+
+  --btn-bg: #ffffff;
+  --btn-border: rgba(0,0,0,0.10);
+  --btn-text: #111827;
+
+  --badge-bg: #ffffff;
+  --badge-text: #111827;
+
+  --slider-track: rgba(0,0,0,0.05);
+  --slider-fill: rgba(0,0,0,0.08);
+  --knob-start: #ffffff;
+  --knob-end: #e5e7eb;
+
+  --scrollbar-thumb: rgba(0,0,0,0.10);
+
+  --shadow-sm: 0 1px 1px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.06);
 }
-html, body, #__next {
-  height: 100%;
-  width: 100%;
-  overscroll-behavior: none;
-}
+
+html, body, #__next { height: 100%; }
 body {
-  overflow-x: hidden; /* 画面外へはみ出す横スクロールを抑制 */
+  -webkit-tap-highlight-color: transparent;
+  font-family: var(--font-en), var(--font-ja), system-ui, sans-serif;
+  background: var(--bg-app);
+  color: var(--text);
 }
-/* === 3カラムで中央の長文が右カラムを押し出す問題のホットフィックス === */
-/* grid/flex の子要素が縮められず横にはみ出すのを防ぐ */
-.grid > *, .flex > * { min-width: 0; }
 
-/* 長い商品名があるときに強制的に折り返す（単語が長くてもOK） */
-li, .product-name, .item-title { overflow-wrap: anywhere; word-break: break-word; }
+/* ===== tokens (CSS 変数に寄せる) ===== */
+@layer components {
+  .ios-surface {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm), var(--shadow-lg);
+  }
+  .ios-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .ios-chip {
+    background: var(--chip-bg);
+    border: 1px solid var(--chip-border);
+    color: var(--chip-text, var(--text-muted));
+    border-radius: 9999px;
+    padding: 2px 8px;
+  }
+  .ios-round {
+    border-radius: 9999px;
+    background: var(--radio-bg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .ios-sep { border-top: 1px solid var(--border); }
 
-/* iPadなどで右カラムを常に画面内に保持したい場合のユーティリティ（必要なら使う） */
-@media (min-width: 768px) {
-  .three-pane {
-    display: grid;
-    grid-template-columns: clamp(160px, 20vw, 240px) minmax(0, 1fr) clamp(260px, 28vw, 340px);
-    gap: 12px;
-  }
-  .pane-center { overflow: hidden; }
-  .pane-center > .scroll {
-    overflow-y: auto;
-    max-height: calc(100svh - var(--safe-top, 0px) - var(--safe-bottom, 0px) - 16px);
-  }
-  .pane-right { position: sticky; top: calc(var(--safe-top, 0px) + 8px); align-self: start; }
-}
-/* === Compact Tablet Mode v1 (iPad向け視認性/密度調整) === */
-@media (min-width: 768px) and (max-width: 1180px) {
-  /* 3カラムの密度を下げる（中央を最大化） */
-  .three-pane {
-    display: grid;
-    grid-template-columns: clamp(120px, 18vw, 200px) minmax(0, 1fr) clamp(220px, 26vw, 300px);
-    gap: 8px;
-  }
+  .ui-tap { transition: transform .1s; }
+  .ui-tap:active { transform: scale(.98); }
+  .ui-focus:focus { outline: none; box-shadow: 0 0 0 2px var(--accent); }
 
-  /* 中央：文字サイズ・行間・余白の調整（読みやすさ優先で微縮小） */
-  .pane-center {
-    font-size: 0.95rem;      /* ≒15.2px */
-    line-height: 1.35;
-  }
-  .pane-center .scroll > * { margin-bottom: 6px; }
-
-  /* 商品名：2行で折り返し＆どんな長さでも崩さない */
-  .product-name, .item-title, .pane-center li .title, .pane-center .card .title {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    line-height: 1.25;
+  .btn-round-sm {
+    border-radius: 9999px;
+    background: var(--btn-bg);
+    border: 1px solid var(--btn-border);
+    color: var(--btn-text, inherit);
+    box-shadow: var(--shadow-sm);
   }
 
-  /* ボタン密度（中央＆右） */
-  .pane-center button, .pane-right button {
-    padding: 8px 10px;
+  .btn-radio-icon {
+    background: var(--radio-bg);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-radio-active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent) inset, var(--shadow-sm);
   }
 
-  /* アイコン縮小（汎用） */
-  .pane-left button svg, .pane-center button svg, .pane-right button svg,
-  .pane-left button img,  .pane-center button img,  .pane-right button img {
-    width: 20px;
-    height: 20px;
+  .btn-radio-label { color: var(--text-muted); }
+
+  .row-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    text-align: left;
+    padding: .5rem;
   }
-
-  /* 右カラム：常に見える位置に（前回のsticky想定） */
-  .pane-right {
-    position: sticky;
-    top: calc(var(--safe-top, 0px) + 8px);
-    align-self: start;
-    font-size: 0.95rem;
-  }
-
-  /* 左カラム：カテゴリ密度を少し上げる（アイコン行間など） */
-  .pane-left .grid, .pane-left .flex { gap: 6px; }
 }
 
-/* 予防線：grid/flex子の縮み許可（押し出し防止の基本） */
-.grid > *, .flex > * { min-width: 0; }
-/* === Tablet Compact++ & Round Icons & Tap-to-Add (overlay) === */
-
-/* 3カラム：デフォルトの余白を最小に */
-.three-pane { gap: 4px; }
-
-/* 支払い方法：常に丸いアイコンに（44px円・中身は22px） */
-.pane-right .payment-methods,
-.pane-right .payments { display: grid; grid-auto-flow: column; gap: 6px; }
-.pane-right .payment-methods button,
-.pane-right .payments button,
-.pane-right .payment-methods .icon,
-.pane-right .payments .icon {
-  width: 44px; height: 44px;
-  border-radius: 9999px;
-  display: grid; place-items: center;
-  padding: 0;
-}
-.pane-right .payment-methods img,
-.pane-right .payment-methods svg,
-.pane-right .payments img,
-.pane-right .payments svg { width: 22px; height: 22px; }
-
-/* カテゴリアイコン：小型化しつつ円形 */
-.pane-left .grid, .pane-left .flex { gap: 6px; }
-.pane-left .category, .pane-left button {
-  width: 56px; height: 56px; padding: 6px;
-  border-radius: 9999px;
-}
-
-/* 中央リスト：文字詰め・行間微調整、リスト項目を折返し */
-.pane-center { font-size: 0.95rem; line-height: 1.35; }
-.pane-center .product-name, .pane-center .item-title, .pane-center li .title {
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  overflow: hidden; overflow-wrap: anywhere; word-break: break-word; line-height: 1.25;
-}
-
-/* ＋ボタンを“行全体の透明オーバーレイ”にして、どこをタップしても追加 */
-.pane-center li, .pane-center .product-row, .pane-center .item { position: relative; }
-
-/* まず aria-label で加算ボタンを特定（あれば最優先） */
-.pane-center li button[aria-label*="add" i],
-.pane-center li button[aria-label*="追加"],
-.pane-center .product-row button[aria-label*="add" i],
-.pane-center .product-row button[aria-label*="追加"],
-.pane-center .item button[aria-label*="add" i],
-.pane-center .item button[aria-label*="追加"] {
-  position: absolute; inset: 0; margin: 0; padding: 0; border: 0;
-  opacity: 0; /* 見た目消す（クリックは生かす） */
-}
-
-/* aria-label が無い場合の汎用フォールバック：最初のボタンをオーバーレイ化 */
-.pane-center li > button:first-of-type,
-.pane-center .product-row > button:first-of-type,
-.pane-center .item > button:first-of-type {
-  position: absolute; inset: 0; margin: 0; padding: 0; border: 0; opacity: 0;
-}
-
-/* タブレット帯の列幅最適化（中央最大化、左右は下限/上限つき） */
-@media (min-width: 768px) and (max-width: 1180px) {
-  .three-pane {
-    grid-template-columns: clamp(110px, 17vw, 180px) minmax(0, 1fr) clamp(210px, 24vw, 280px);
-    gap: 4px;
-  }
-  .pane-right { position: sticky; top: calc(var(--safe-top, 0px) + 8px); align-self: start; }
-}
-
-/* 予防線：grid/flex 子を縮められるように */
-.grid > *, .flex > * { min-width: 0; }
-/* === Tablet Compact++ & Round Icons & Tap-to-Add (overlay) === */
-
-/* 3カラム：デフォルトの余白を最小に */
-.three-pane { gap: 4px; }
-
-/* 支払い方法：常に丸いアイコンに（44px円・中身は22px） */
-.pane-right .payment-methods,
-.pane-right .payments { display: grid; grid-auto-flow: column; gap: 6px; }
-.pane-right .payment-methods button,
-.pane-right .payments button,
-.pane-right .payment-methods .icon,
-.pane-right .payments .icon {
-  width: 44px; height: 44px;
-  border-radius: 9999px;
-  display: grid; place-items: center;
-  padding: 0;
-}
-.pane-right .payment-methods img,
-.pane-right .payment-methods svg,
-.pane-right .payments img,
-.pane-right .payments svg { width: 22px; height: 22px; }
-
-/* カテゴリアイコン：小型化しつつ円形 */
-.pane-left .grid, .pane-left .flex { gap: 6px; }
-.pane-left .category, .pane-left button {
-  width: 56px; height: 56px; padding: 6px;
-  border-radius: 9999px;
-}
-
-/* 中央リスト：文字詰め・行間微調整、リスト項目を折返し */
-.pane-center { font-size: 0.95rem; line-height: 1.35; }
-.pane-center .product-name, .pane-center .item-title, .pane-center li .title {
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  overflow: hidden; overflow-wrap: anywhere; word-break: break-word; line-height: 1.25;
-}
-
-/* ＋ボタンを“行全体の透明オーバーレイ”にして、どこをタップしても追加 */
-.pane-center li, .pane-center .product-row, .pane-center .item { position: relative; }
-
-/* まず aria-label で加算ボタンを特定（あれば最優先） */
-.pane-center li button[aria-label*="add" i],
-.pane-center li button[aria-label*="追加"],
-.pane-center .product-row button[aria-label*="add" i],
-.pane-center .product-row button[aria-label*="追加"],
-.pane-center .item button[aria-label*="add" i],
-.pane-center .item button[aria-label*="追加"] {
-  position: absolute; inset: 0; margin: 0; padding: 0; border: 0;
-  opacity: 0; /* 見た目消す（クリックは生かす） */
-}
-
-/* aria-label が無い場合の汎用フォールバック：最初のボタンをオーバーレイ化 */
-.pane-center li > button:first-of-type,
-.pane-center .product-row > button:first-of-type,
-.pane-center .item > button:first-of-type {
-  position: absolute; inset: 0; margin: 0; padding: 0; border: 0; opacity: 0;
-}
-
-/* タブレット帯の列幅最適化（中央最大化、左右は下限/上限つき） */
-@media (min-width: 768px) and (max-width: 1180px) {
-  .three-pane {
-    grid-template-columns: clamp(110px, 17vw, 180px) minmax(0, 1fr) clamp(210px, 24vw, 280px);
-    gap: 4px;
-  }
-  .pane-right { position: sticky; top: calc(var(--safe-top, 0px) + 8px); align-self: start; }
-}
-
-/* 予防線：grid/flex 子を縮められるように */
-.grid > *, .flex > * { min-width: 0; }
-/* --- Center the middle list within its column (text remains left-aligned) --- */
-.pane-center {
-  display: flex;
-  justify-content: center;       /* 列の中央に配置 */
-}
-.pane-center .scroll,
-.pane-center .list,
-.pane-center > ul,
-.pane-center > ol,
-.pane-center > div.list {
-  width: min(680px, 100%);       /* iPadで読みやすい幅にクランプ（必要なら数値調整） */
-}
-
-/* ULの左インデント消し＋余白整理（必要な場合） */
-.pane-center ul { list-style: none; padding-left: 0; margin: 0; }
-
-/* 余白は最小限（既存のthree-pane/gap設定と併用OK） */
-.three-pane { gap: 4px; }
-/* === layout guard & centering === */
-.grid > *, .flex > * { min-width: 0; } /* grid/flex 子の押し出し防止 */
-.pane-center { display: flex; justify-content: center; }
-.pane-center .inner { width: min(680px, 100%); }
-
-/* タブレット帯の密度最適化（任意で調整可） */
-@media (min-width:768px) and (max-width:1180px){
-  .three-pane{ gap:4px; }
-  .pane-left button { width:56px !important; height:56px !important; }
-}
-
-/* === UI compact & fixes (safe override) === */
-.three-pane { gap: 2px !important; }
-
-/* 支払いアイコンを丸 44x44 に統一（TopBarを .payment-row で包む想定） */
-.pane-right .payment-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-.pane-right .payment-row :where(button,[role="button"],a) {
-  width:44px; height:44px; border-radius:9999px;
-  display:grid; place-items:center; padding:0;
-}
-.pane-right .payment-row :where(svg,img) { width:22px; height:22px; }
-
-/* 中央：プラス系を確実に隠す＆縦仕切りを消す */
-.pane-center :where(.card,.product-row,li) :where(button,[role="button"]) { display:none !important; }
-.pane-center .card > :last-child { display:none !important; } /* 右端カラムを丸ごと隠す保険 */
-.pane-center :where([class*="border-l"],[class*="divide-x"]) {
-  border-left:0 !important; border-left-width:0 !important; border-right-width:0 !important;
-}
-
-/* 押し出し防止 */
-.grid > *, .flex > * { min-width: 0; }
+/* scrollbars */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 9999px; }
+*::-webkit-scrollbar-track { background: transparent; }

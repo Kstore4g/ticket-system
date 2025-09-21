@@ -21,7 +21,7 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
       type="button"
       onClick={onActivate}
       onKeyDown={onKeyDown}
-      className="row-card ui-tap ui-focus" style={{ position: "relative" }}
+      className="row-card ui-tap ui-focus"
       aria-label={product.name + " を追加"}
     >
       <div className="flex items-center gap-3">
@@ -41,27 +41,10 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
         )}
 
         <div className="flex-1 min-w-0">
-          <div
-            className="truncate font-semibold leading-tight"
-            style={{ fontSize: LAYOUT.productNamePx, transform: "translate(" + LAYOUT.productNameOffsetXPx + "px," + LAYOUT.productNameOffsetYPx + "px)" }}
-          >
-            {product.name}
-          </div>
-          <div
-            className="leading-tight"
-            style={{
-              fontSize: LAYOUT.productPricePx,
-              color: "var(--text-muted)",
-              transform: "translate(" + LAYOUT.productPriceOffsetXPx + "px," + LAYOUT.productPriceOffsetYPx + "px)"
-            }}
-          >
-            ¥{product.price.toLocaleString()}
-          </div>
+          <div className="truncate font-semibold leading-tight" style={{ fontSize: LAYOUT.productNamePx }}>{product.name}</div>
+          <div className="leading-tight" style={{ fontSize: LAYOUT.productPricePx, color: "var(--text-muted)" }}>¥{product.price.toLocaleString()}</div>
           {product.allergy?.length ? (
-            <div
-              className="flex flex-wrap gap-1 mt-1"
-              style={{ transform: "translate(" + LAYOUT.allergyOffsetXPx + "px," + LAYOUT.allergyOffsetYPx + "px)" }}
-            >
+            <div className="flex flex-wrap gap-1 mt-1">
               {product.allergy.slice(0, 8).map((al) => (
                 <span key={al} className="ios-chip" style={{ fontSize: LAYOUT.allergyChipFontPx }}>{al}</span>
               ))}
@@ -69,24 +52,20 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
           ) : null}
         </div>
 
-        <div className="shrink-0" style={{ position: "absolute", top: LAYOUT.qtyBadgeOffsetTopPx, right: LAYOUT.qtyBadgeOffsetRightPx, zIndex: LAYOUT.qtyBadgeZIndex, pointerEvents: "none" }}>
+        <div className="shrink-0">
           <div
-            className="flex items-center justify-center"
             style={{
               background: "var(--badge-bg)",
               color: "var(--badge-text)",
               minWidth: LAYOUT.qtyBadgeMinWidthPx,
               height: LAYOUT.qtyBadgeHeightPx,
-              paddingInline: LAYOUT.qtyBadgePaddingInlinePx,
+              paddingInline: 8,
               fontSize: LAYOUT.qtyTextPx,
+              borderRadius: 9999,
               border: "1px solid var(--border)",
-              boxShadow: "var(--shadow-sm)",
-              // 四隅の角丸を個別指定
-              borderTopLeftRadius: LAYOUT.qtyBadgeRadiusTopLeftPx,
-              borderTopRightRadius: LAYOUT.qtyBadgeRadiusTopRightPx,
-              borderBottomRightRadius: LAYOUT.qtyBadgeRadiusBottomRightPx,
-              borderBottomLeftRadius: LAYOUT.qtyBadgeRadiusBottomLeftPx,
+              boxShadow: "var(--shadow-sm)"
             }}
+            className="flex items-center justify-center"
           >
             {qty}
           </div>
@@ -95,5 +74,3 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
     </button>
   );
 }
-
-

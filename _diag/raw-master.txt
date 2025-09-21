@@ -1,0 +1,7 @@
+https://raw.githubusercontent.com/Kstore4g/ticket-system/64383a3974810fbce57aee6849bad7a04b411dfc/pages/_app.tsx
+https://raw.githubusercontent.com/Kstore4g/ticket-system/64383a3974810fbce57aee6849bad7a04b411dfc/pages/index.tsx
+https://raw.githubusercontent.com/Kstore4g/ticket-system/64383a3974810fbce57aee6849bad7a04b411dfc/components/CartPanel.tsx
+https://raw.githubusercontent.com/Kstore4g/ticket-system/64383a3974810fbce57aee6849bad7a04b411dfc/components/ProductCard.tsx
+https://raw.githubusercontent.com/Kstore4g/ticket-system/64383a3974810fbce57aee6849bad7a04b411dfc/components/SlideToConfirm.tsx
+https://raw.githubusercontent.com/Kstore4g/ticket-system/64383a3974810fbce57aee6849bad7a04b411dfc/styles/globals.css
+https://raw.githubusercontent.com/Kstore4g/ticket-system/64383a3974810fbce57aee6849bad7a04b411dfc/tailwind.config.js

@@ -1,0 +1,200 @@
+/**
+ * lib/theme.ts
+ * ─────────────────────────────────────────────────────────────
+ * 「色・背景・影・文字色」を一括管理し、CSS 変数として :root に適用します。
+ * 変更の仕方：
+ *   1) THEME_LIGHT.colors の値を変える   → すぐ UI に反映（ThemeProvider 経由）
+ *   2) 必要なら THEME_DARK も用意して、<ThemeProvider theme="dark"> で切替
+ *   3) さらに細かく変えたい場合は、applyTheme() の CSS 変数割当を増やす
+ *
+ * どこに効く？
+ *   - Body 背景色              : appBg → --bg-app（globals.css の body 背景）
+ *   - 基本文字色/サブ文字色    : text / textMuted → --text / --text-muted
+ *   - 面の色/境界/影           : surface / border / shadows → .ios-section / .row-card / .btn-round-sm など
+ *   - Chip                     : chipBg / chipBorder / chipText → .ios-chip
+ *   - ラジオ風丸（カテゴリ/決済）: radioBg / radioActive → .btn-radio-icon / .btn-radio-active
+ *   - 小ボタン（±など）        : buttonBg / buttonBorder / buttonText → .btn-round-sm
+ *   - 個数バッジ               : badgeBg / badgeText → ProductCard の数量表示
+ *   - スライダー               : sliderTrack / sliderFill / knobStart / knobEnd → SlideToConfirm
+ *   - スクロールバー           : scrollbarThumb → すべてのスクロールバー
+ */
+
+export type Theme = {
+  name: string;
+
+  /** 色系（＝CSS変数にマップされ UI 各所で参照） */
+  colors: {
+    appBg: string;        // Body 背景（--bg-app）: 画面全体の地色
+
+    text: string;         // 通常の文字色（--text）
+    textMuted: string;    // 補助テキスト（--text-muted）: 価格・サブ情報・ラベルなど
+
+    surface: string;          // 面の地色（--surface）: .ios-section / .row-card / 小ボタンのベース
+    surfaceElevated: string;  // やや持ち上がった面（--surface-elev）: 画像プレースホルダ、スライダートラックのグラデ等
+    border: string;           // 枠線（--border）: 面/丸/ボタン/区切り線の境界色
+
+    chipBg: string;       // チップ背景（--chip-bg）: アレルギータグ等
+    chipBorder: string;   // チップ枠線（--chip-border）
+    chipText?: string;    // チップ文字（--chip-text）: 未指定なら --text-muted を使用
+
+    radioBg: string;      // 丸アイコンの地（--radio-bg）: カテゴリ/支払いアイコンの内側
+    radioActive: string;  // アクティブ装飾（--accent）: 選択リングや focus リング
+
+    buttonBg: string;     // 小ボタン背景（--btn-bg）: ±ボタンなど
+    buttonBorder: string; // 小ボタン枠線（--btn-border）
+    buttonText?: string;  // 小ボタン文字（--btn-text）
+
+    badgeBg: string;      // 数量バッジ背景（--badge-bg）
+    badgeText?: string;   // 数量バッジ文字（--badge-text）
+
+    sliderTrack: string;  // スライダートラックの薄い塗り（--slider-track）
+    sliderFill: string;   // スライダーフィル（--slider-fill）
+    knobStart: string;    // ノブ上側グラデ起点（--knob-start）
+    knobEnd: string;      // ノブ下側グラデ終点（--knob-end）
+
+    scrollbarThumb: string; // スクロールバーつまみ（--scrollbar-thumb）
+  };
+
+  /** 影系（＝CSS変数にマップされ UI 各所で参照） */
+  shadows: {
+    sm: string;           // --shadow-sm : 面やボタンの基本シャドウ
+    lg: string;           // --shadow-lg : 大きめの持ち上げ（カード等）
+  };
+};
+
+/** ライトテーマ（既定）: iOS ライクな清潔感 */
+export const THEME_LIGHT: Theme = {
+  name: "light",
+  colors: {
+    appBg: "#f5f5f7",            // Body 背景
+
+    text: "#111827",             // 文字（濃いグレー）
+    textMuted: "#6b7280",        // 補助文字（薄いグレー）
+
+    surface: "#ffffff",          // 面（白）
+    surfaceElevated: "#f3f4f6",  // やや持ち上げ面（薄グレー）
+    border: "rgba(0,0,0,0.08)",  // 枠線（ごく薄い黒）
+
+    chipBg: "#f3f4f6",           // チップ背景
+    chipBorder: "rgba(0,0,0,0.10)",
+    chipText: "#374151",
+
+    radioBg: "#ffffff",          // 丸アイコンの地
+    radioActive: "rgba(0,0,0,0.25)", // 選択リング/フォーカスのアクセント
+
+    buttonBg: "#ffffff",         // 小ボタン（±）
+    buttonBorder: "rgba(0,0,0,0.10)",
+    buttonText: "#111827",
+
+    badgeBg: "#ffffff",          // 数量バッジ
+    badgeText: "#111827",
+
+    sliderTrack: "rgba(0,0,0,0.05)", // トラック地
+    sliderFill: "rgba(0,0,0,0.08)",  // 進捗の塗り
+    knobStart: "#ffffff",            // ノブ上グラデ
+    knobEnd: "#e5e7eb",              // ノブ下グラデ
+
+    scrollbarThumb: "rgba(0,0,0,0.10)",
+  },
+  shadows: {
+    sm: "0 1px 1px rgba(0,0,0,0.04)",
+    lg: "0 10px 30px rgba(0,0,0,0.06)",
+  },
+};
+
+/** ダークテーマ（雛形）: 必要に応じて値を調整して使ってください */
+export const THEME_DARK: Theme = {
+  ...THEME_LIGHT,
+  name: "dark",
+  colors: {
+    ...THEME_LIGHT.colors,
+    appBg: "#0b0b0c",
+    text: "#f3f4f6",
+    textMuted: "#9ca3af",
+    surface: "#151517",
+    surfaceElevated: "#1b1c1f",
+    border: "rgba(255,255,255,0.12)",
+    chipBg: "#1f2023",
+    chipBorder: "rgba(255,255,255,0.16)",
+    radioBg: "#1b1c1f",
+    buttonBg: "#1b1c1f",
+    badgeBg: "#1b1c1f",
+    sliderTrack: "rgba(255,255,255,0.08)",
+    sliderFill: "rgba(255,255,255,0.14)",
+    knobStart: "#2a2b2f",
+    knobEnd: "#1b1c1f",
+    scrollbarThumb: "rgba(255,255,255,0.16)",
+    radioActive: "rgba(255,255,255,0.35)",
+  },
+  shadows: {
+    sm: "0 1px 1px rgba(0,0,0,0.6)",
+    lg: "0 10px 30px rgba(0,0,0,0.55)",
+  },
+};
+
+/**
+ * applyTheme(theme)
+ * ─────────────────────────────────────────────────────────────
+ * Theme.colors / shadows を CSS 変数へセットします。
+ * 変数名と利用先（抜粋）：
+ *   --bg-app         : globals.css body 背景
+ *   --text           : ベース文字色
+ *   --text-muted     : 価格/ラベルなど補助色
+ *   --surface        : .ios-section / .row-card / .btn-round-sm 背景
+ *   --surface-elev   : 画像プレースホルダ/スライダー背景のグラデ下側
+ *   --border         : 面/丸/ボタンの枠線、区切り .ios-sep
+ *   --chip-bg/…      : .ios-chip
+ *   --radio-bg       : .btn-radio-icon の内側
+ *   --accent         : .btn-radio-active のリング、.ui-focus の focus-outline
+ *   --btn-bg/…       : .btn-round-sm（±ボタン）
+ *   --badge-bg/…     : 数量バッジ（ProductCard）
+ *   --slider-*       : SlideToConfirm のトラック/フィル/ノブ
+ *   --scrollbar-thumb: 全体スクロールバー
+ *   --shadow-sm/lg   : 面/ボタンの影
+ */
+export function applyTheme(theme: Theme) {
+  if (typeof document === "undefined") return; // SSR では何もしない
+  const r = document.documentElement.style;
+  const c = theme.colors, s = theme.shadows;
+
+  // ベース配色
+  r.setProperty("--bg-app", c.appBg);
+  r.setProperty("--text", c.text);
+  r.setProperty("--text-muted", c.textMuted);
+
+  // 面・境界
+  r.setProperty("--surface", c.surface);
+  r.setProperty("--surface-elev", c.surfaceElevated);
+  r.setProperty("--border", c.border);
+
+  // チップ
+  r.setProperty("--chip-bg", c.chipBg);
+  r.setProperty("--chip-border", c.chipBorder);
+  if (c.chipText) r.setProperty("--chip-text", c.chipText);
+
+  // ラジオ丸（カテゴリ/支払い）
+  r.setProperty("--radio-bg", c.radioBg);
+  r.setProperty("--accent", c.radioActive);
+
+  // 小ボタン（±）
+  r.setProperty("--btn-bg", c.buttonBg);
+  r.setProperty("--btn-border", c.buttonBorder);
+  if (c.buttonText) r.setProperty("--btn-text", c.buttonText);
+
+  // 数量バッジ
+  r.setProperty("--badge-bg", c.badgeBg);
+  if (c.badgeText) r.setProperty("--badge-text", c.badgeText);
+
+  // スライダー
+  r.setProperty("--slider-track", c.sliderTrack);
+  r.setProperty("--slider-fill", c.sliderFill);
+  r.setProperty("--knob-start", c.knobStart);
+  r.setProperty("--knob-end", c.knobEnd);
+
+  // スクロールバー
+  r.setProperty("--scrollbar-thumb", c.scrollbarThumb);
+
+  // 影
+  r.setProperty("--shadow-sm", s.sm);
+  r.setProperty("--shadow-lg", s.lg);
+}

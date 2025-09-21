@@ -1,0 +1,5 @@
+RepoRoot: C:\Users\Ipeei\ticket-system
+Branch: master
+HEAD: 64383a3
+Contains 8f9794a on master: False
+pages/_app.tsx returns <Component {...pageProps} />: True

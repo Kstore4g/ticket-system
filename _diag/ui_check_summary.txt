@@ -1,0 +1,25 @@
+=== UI Implementation Check (読み取り専用) ===
+RepoRoot: C:/Users/Ipeei/ticket-system
+index candidates: pages/index.tsx
+
+Check                              File                         Result
+-----                              ----                         ------
+Routing: pages/ あり                 (dir)                        PASS
+Routing: app/ 共存なし                 (dir)                        PASS
+Entry: index/page 存在               (found)                      PASS
+CartPanel: setSelectedPay 実装       components/CartPanel.tsx     PASS
+CartPanel: 支払onClick stopProp      components/CartPanel.tsx     PASS
+CartPanel: radiogroup/role属性       components/CartPanel.tsx     PASS
+CartPanel: onInc ハンドラ              components/CartPanel.tsx     PASS
+CartPanel: onDec ハンドラ              components/CartPanel.tsx     PASS
+CartPanel: ± type="button"         components/CartPanel.tsx     PASS
+CartPanel: ± stopPropagation       components/CartPanel.tsx     PASS
+ProductCard: 行全体がbutton            components/ProductCard.tsx   PASS
+ProductCard: onAdd(product)        components/ProductCard.tsx   PASS
+ProductCard: qtyバッジ表示              components/ProductCard.tsx   PASS
+ProductCard: アレルギー表示               components/ProductCard.tsx   PASS
+Slide: knob button化                components/SlideToConfirm.tsx PASS
+Slide: touch passive=false         components/SlideToConfirm.tsx PASS
+Slide: preventDefault on move      components/SlideToConfirm.tsx PASS
+Slide: 90%で確定                      components/SlideToConfirm.tsx PASS
+Global: document/window click      (scan)                       PASS

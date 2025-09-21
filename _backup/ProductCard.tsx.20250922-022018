@@ -21,7 +21,7 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
       type="button"
       onClick={onActivate}
       onKeyDown={onKeyDown}
-      className="row-card ui-tap ui-focus" style={{ position: "relative" }}
+      className="row-card ui-tap ui-focus"
       aria-label={product.name + " を追加"}
     >
       <div className="flex items-center gap-3">
@@ -69,7 +69,7 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
           ) : null}
         </div>
 
-        <div className="shrink-0" style={{ position: "absolute", top: LAYOUT.qtyBadgeOffsetTopPx, right: LAYOUT.qtyBadgeOffsetRightPx, zIndex: LAYOUT.qtyBadgeZIndex, pointerEvents: "none" }}>
+        <div className="shrink-0">
           <div
             className="flex items-center justify-center"
             style={{
@@ -81,6 +81,7 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
               fontSize: LAYOUT.qtyTextPx,
               border: "1px solid var(--border)",
               boxShadow: "var(--shadow-sm)",
+              marginRight: -LAYOUT.qtyBadgeOverflowRightPx,
               // 四隅の角丸を個別指定
               borderTopLeftRadius: LAYOUT.qtyBadgeRadiusTopLeftPx,
               borderTopRightRadius: LAYOUT.qtyBadgeRadiusTopRightPx,
@@ -95,5 +96,4 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
     </button>
   );
 }
-
 

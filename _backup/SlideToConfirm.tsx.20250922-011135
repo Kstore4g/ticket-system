@@ -9,12 +9,15 @@ type SlideToConfirmProps = {
 };
 
 export default function SlideToConfirm({
-  onConfirm, disabled = false, label = "スライドして決済", className = "",
+  onConfirm,
+  disabled = false,
+  label = "スライドして決済",
+  className = "",
 }: SlideToConfirmProps) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const knobRef = useRef<HTMLButtonElement | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [pos, setPos] = useState(0);
+  const [pos, setPos] = useState(0); // 0..1
   const [pointerId, setPointerId] = useState<number | null>(null);
   const [trackW, setTrackW] = useState(0);
 
@@ -27,11 +30,13 @@ export default function SlideToConfirm({
 
   useEffect(() => {
     const updateW = () => setTrackW(trackRef.current?.clientWidth || 0);
-    updateW(); window.addEventListener("resize", updateW); return () => window.removeEventListener("resize", updateW);
+    updateW();
+    window.addEventListener("resize", updateW);
+    return () => window.removeEventListener("resize", updateW);
   }, []);
 
-  const clamp = (v:number,min:number,max:number)=>Math.max(min,Math.min(max,v));
-  const updateByClientX = (clientX:number) => {
+  const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
+  const updateByClientX = (clientX: number) => {
     if (!trackRef.current) return;
     const rect = trackRef.current.getBoundingClientRect();
     const rel = clamp(clientX - (rect.left + insetL), 0, maxRange);
@@ -39,56 +44,69 @@ export default function SlideToConfirm({
   };
 
   useEffect(() => {
-    const onPointerMove = (e: PointerEvent) => { if (!dragging) return; e.preventDefault(); e.stopPropagation(); updateByClientX(e.clientX); };
-    const onPointerUp   = (e: PointerEvent) => {
-      if (!dragging) return; e.preventDefault(); e.stopPropagation();
-      if (pointerId !== null && knobRef.current?.hasPointerCapture(pointerId)) { knobRef.current.releasePointerCapture(pointerId); }
-      setDragging(false);
-      if (pos >= confirmAt && !disabled) { setPos(1); onConfirm(); } else { setPos(0); }
+    const onPointerMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      e.preventDefault(); e.stopPropagation();
+      updateByClientX(e.clientX);
     };
+    const onPointerUp = (e: PointerEvent) => {
+      if (!dragging) return;
+      e.preventDefault(); e.stopPropagation();
+      if (pointerId !== null && knobRef.current?.hasPointerCapture(pointerId)) {
+        knobRef.current.releasePointerCapture(pointerId);
+      }
+      setDragging(false);
+      if (pos >= confirmAt && !disabled) {
+        setPos(1);
+        onConfirm();
+      } else {
+        setPos(0);
+      }
+    };
+
     window.addEventListener("pointermove", onPointerMove, { passive: false });
     window.addEventListener("pointerup", onPointerUp, { passive: false });
-    return () => { window.removeEventListener("pointermove", onPointerMove); window.removeEventListener("pointerup", onPointerUp); };
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+    };
   }, [dragging, pos, disabled, onConfirm, pointerId, maxRange]);
 
   const startDrag = (e: React.PointerEvent) => {
     e.preventDefault(); e.stopPropagation();
-    setDragging(true); setPointerId(e.pointerId);
+    setDragging(true);
+    setPointerId(e.pointerId);
     knobRef.current?.setPointerCapture(e.pointerId);
     updateByClientX(e.clientX);
   };
 
   const knobLeftPx = insetL + pos * maxRange;
-  const fillW = Math.max(knobLeftPx + knobPx, knobPx);
+  const fillW = Math.max(knobLeftPx + knobPx, knobPx); // ノブ端まで塗る
 
   return (
     <div className={"w-full select-none " + (disabled ? "opacity-50 pointer-events-none " : "") + (className || "")}>
       <div
         ref={trackRef}
-        className="relative h-11 w-full rounded-full overflow-hidden"
+        className="relative h-11 w-full rounded-full bg-gradient-to-b from-white to-neutral-100 ring-1 ring-black/10 shadow-sm overflow-hidden"
         aria-label={label}
-        style={{
-          background: "linear-gradient(to bottom, var(--surface), var(--surface-elev))",
-          border: "1px solid var(--border)",
-          boxShadow: "var(--shadow-sm)"
-        }}
       >
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ color: "var(--text-muted)", fontSize: LAYOUT.slideLabelPx }}>
+        {/* ラベル */}
+        <div className="absolute inset-0 flex items-center justify-center text-neutral-600 pointer-events-none" style={{ fontSize: LAYOUT.slideLabelPx }}>
           {label}
         </div>
 
-        <div className="absolute top-0 left-0 h-full" style={{ width: fillW, background: "var(--slider-fill)" }} />
+        {/* 進捗 */}
+        <div
+          className="absolute top-0 left-0 h-full bg-neutral-200/50"
+          style={{ width: fillW }}
+        />
 
+        {/* ノブ */}
         <button
           ref={knobRef}
           type="button"
-          className="absolute top-1/2 -translate-y-1/2 ui-tap ui-focus"
-          style={{
-            width: knobPx, height: knobPx, left: knobLeftPx, borderRadius: "9999px",
-            background: "linear-gradient(to bottom, var(--knob-start), var(--knob-end))",
-            border: "1px solid var(--border)",
-            boxShadow: "var(--shadow-sm)"
-          }}
+          className="absolute top-1/2 -translate-y-1/2 rounded-full bg-gradient-to-b from-white to-neutral-200 shadow ring-1 ring-black/10 ui-tap ui-focus"
+          style={{ width: knobPx, height: knobPx, left: knobLeftPx }}
           onPointerDown={startDrag}
           aria-label={label}
         />
