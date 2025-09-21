@@ -71,7 +71,7 @@ export default function Home() {
 
   return (
     <LayoutGroup>
-      <div className="min-h-screen bg-gray-100 px-4 py-3">
+      <div className="min-min-h-[100svh] bg-gray-100 px-4 py-3">
 
         {/* 支払い選択（初回のみ中央） */}
         <AnimatePresence>
@@ -184,3 +184,5 @@ export default function Home() {
     </LayoutGroup>
   );
 }
+
+
