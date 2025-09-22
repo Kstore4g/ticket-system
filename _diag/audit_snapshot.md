@@ -1,0 +1,1036 @@
+# UI 監査スナップショット
+
+- 作成: 2025-09-22 13:22:25
+- ブランチ: feat/ui-next-20250922-1209
+- HEAD: dbae40c
+- Tailwind: 笏披楳笏 tailwindcss@3.4.17
+
+## tailwind.config.js
+
+```js
+/** @type {import("tailwindcss").Config} */
+module.exports = {
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx}"
+  , "src/**/*.{ts,tsx,js,jsx}", "pages/**/*.{ts,tsx,js,jsx}", "components/**/*.{ts,tsx,js,jsx}"],
+  theme: { extend: {} },
+  plugins: [require("twglow"), ],
+}
+
+
+
+```
+
+## postcss.config.js
+
+```js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+
+```
+
+## package.json
+
+```txt
+{
+  "name": "ticket-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kstore4g/ticket-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kstore4g/ticket-system/issues"
+  },
+  "homepage": "https://github.com/Kstore4g/ticket-system#readme",
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "axios": "^1.12.2",
+    "framer-motion": "^12.23.15",
+    "howler": "^2.2.4",
+    "next": "^15.5.3",
+    "prisma": "^6.16.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zzfx": "^1.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "twglow": "^0.0.10",
+    "typescript": "^5.9.2"
+  }
+}
+
+```
+
+## styles/globals.css
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== font stacks (英/日 一括) ===== */
+:root{
+  --font-en: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-ja: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "YuGothic", Meiryo, "Noto Sans JP";
+
+  /* colors (ThemeProvider が上書き) */
+  --bg-app: #f5f5f7;
+  --text: #111827;
+  --text-muted: #6b7280;
+
+  --surface: #ffffff;
+  --surface-elev: #f3f4f6;
+  --border: rgba(0,0,0,0.08);
+
+  --chip-bg: #f3f4f6;
+  --chip-border: rgba(0,0,0,0.10);
+  --chip-text: #374151;
+
+  --radio-bg: #ffffff;
+  --accent: rgba(0,0,0,0.25);
+
+  --btn-bg: #ffffff;
+  --btn-border: rgba(0,0,0,0.10);
+  --btn-text: #111827;
+
+  --badge-bg: #ffffff;
+  --badge-text: #111827;
+
+  --slider-track: rgba(0,0,0,0.05);
+  --slider-fill: rgba(0,0,0,0.08);
+  --knob-start: #ffffff;
+  --knob-end: #e5e7eb;
+
+  --scrollbar-thumb: rgba(0,0,0,0.10);
+
+  --shadow-sm: 0 1px 1px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+html, body, #__next { height: 100%; }
+body {
+  -webkit-tap-highlight-color: transparent;
+  font-family: var(--font-en), var(--font-ja), system-ui, sans-serif;
+  background: var(--bg-app);
+  color: var(--text);
+}
+
+/* ===== tokens (CSS 変数に寄せる) ===== */
+@layer components {
+  .ios-surface {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm), var(--shadow-lg);
+  }
+  .ios-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .ios-chip {
+    background: var(--chip-bg);
+    border: 1px solid var(--chip-border);
+    color: var(--chip-text, var(--text-muted));
+    border-radius: 9999px;
+    padding: 2px 8px;
+  }
+  .ios-round {
+    border-radius: 9999px;
+    background: var(--radio-bg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .ios-sep { border-top: 1px solid var(--border); }
+
+  .ui-tap { transition: transform .1s; }
+  .ui-tap:active { transform: scale(.98); }
+  .ui-focus:focus { outline: none; box-shadow: 0 0 0 2px var(--accent); }
+
+  .btn-round-sm {
+    border-radius: 9999px;
+    background: var(--btn-bg);
+    border: 1px solid var(--btn-border);
+    color: var(--btn-text, inherit);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-radio-icon {
+    background: var(--radio-bg);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    box-shadow: var(--shadow-sm);
+   position: relative; }
+  .btn-radio-active {
+  /* keep base background */
+  background: var(--radio-bg);
+  /* ring & glow */
+  border-color: var(--accent);
+  box-shadow:
+    var(--shadow-sm),
+    0 0 0 2px var(--accent) inset,  /* inner ring */
+    0 0 0 2px var(--accent);        /* outer ring */
+  color: inherit; /* 文字色は変えない */
+}
+
+  .btn-radio-label { color: var(--text-muted); }
+
+  .row-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    text-align: left;
+    padding: .5rem;
+  }
+}
+
+/* scrollbars */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 9999px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+
+
+
+@keyframes ring-glow {
+  0%,100% { box-shadow: 0 0 0 2px var(--accent), 0 0 10px var(--accent); }
+  50%     { box-shadow: 0 0 0 2px var(--accent), 0 0 16px var(--accent); }
+}
+.btn-radio-active::after {
+  content: "";
+  position: absolute;
+  inset: -3px;              /* リングの外側厚み */
+  border-radius: 9999px;
+  pointer-events: none;
+  /* 背景は変えず、縁のみ光らせる */
+  box-shadow: 0 0 0 2px var(--accent), 0 0 12px var(--accent);
+  animation: ring-glow 1.6s ease-in-out infinite;
+}
+
+
+```
+
+## pages/_app.tsx
+
+```tsx
+import type { AppProps } from "next/app";
+import "../styles/globals.css";
+import ThemeProvider from "../components/ThemeProvider";
+
+export default function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <ThemeProvider theme={"light"}>
+      <Component {...pageProps} />
+    </ThemeProvider>
+  );
+}
+
+```
+
+## pages/index.tsx
+
+```tsx
+import React, { useMemo, useState } from "react";
+import ProductCard from "../components/ProductCard";
+import CartPanel from "../components/CartPanel";
+import { LAYOUT } from "../lib/layout";
+import { categories, products, type Product as ProductType } from "../data/catalog";
+
+
+type CategoryAny = { id?: string; name?: string; code?: string; icon?: string };
+function productCategoryCandidates(p: any): string[] {
+  return [
+    p.categoryId, p.category_id, p.category, p.categoryCode, p.category_code,
+    p.category?.id, p.category?.code, p.category?.name
+  ].filter(Boolean).map(String);
+}
+function categoryCandidates(c: CategoryAny | undefined): string[] {
+  if (!c) return [];
+  const anyC: any = c;
+  return [c.id, c.name, anyC.code].filter(Boolean).map(String);
+}
+function belongsToCategory(p: any, cid: string): boolean {
+  if (!cid || cid === "all") return true;
+  const pc = productCategoryCandidates(p);
+  // 1) 直ヒット（id/name/code いずれか）
+  if (pc.includes(String(cid))) return true;
+  // 2) 選択中カテゴリの候補と突き合わせ
+  const catFromId = categories.find(c => String(c.id) === String(cid));
+  const catFromAny = catFromId ?? categories.find(c => categoryCandidates(c).includes(String(cid)));
+  const cc = categoryCandidates(catFromAny);
+  return pc.some(v => cc.includes(v));
+}type Item = { product: ProductType; qty: number };
+const isUrl = (s?: string) => !!s && /^(https?:)?\/\//.test(s);
+
+export default function HomePage() {
+  const [selectedCategory, setSelectedCategory] = useState<string>(categories[0]?.id ?? "");
+  const [items, setItems] = useState<Item[]>([]);
+  const [selectedPay, setSelectedPay] = useState<string>("cash");
+
+  const visibleProducts = useMemo(() => products.filter(p => belongsToCategory(p, selectedCategory)), [selectedCategory]);
+
+  const onAdd = (p: ProductType) => {
+    setItems((prev) => {
+      const i = prev.findIndex((x) => x.product.id === p.id);
+      if (i >= 0) { const copy = [...prev]; copy[i] = { ...copy[i], qty: copy[i].qty + 1 }; return copy; }
+      return [...prev, { product: p, qty: 1 }];
+    });
+  };
+  const onInc = (id: string) => setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: it.qty + 1 } : it)));
+  const onDec = (id: string) =>
+    setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: Math.max(0, it.qty - 1) } : it))).filter((it) => it.qty > 0);
+  const onConfirm = () => { alert("決済確定（" + selectedPay + "）"); setItems([]); };
+  const getQty = (id: string) => items.find((it) => it.product.id === id)?.qty ?? 0;
+
+  return (
+    <div className="h-screen w-screen overflow-hidden" style={{ background: "var(--bg-app)" }}>
+      <div
+        className="flex h-full"
+        style={{
+          gap: LAYOUT.columnGapPx,
+          paddingTop: LAYOUT.outerPaddingTopPx,
+          paddingRight: LAYOUT.outerPaddingRightPx,
+          paddingBottom: LAYOUT.outerPaddingBottomPx,
+          paddingLeft: LAYOUT.outerPaddingLeftPx
+        }}
+      >
+        {/* 左：カテゴリ */}
+        <aside
+          className="ios-section p-2 hidden sm:block relative z-10"
+          role="radiogroup"
+          aria-label="カテゴリ"
+          style={{ width: LAYOUT.leftColWidthPx }}
+        >
+          <div className="grid auto-rows-min place-items-center" style={{ gap: LAYOUT.categoryIconGapPx }}>
+            {categories.map((c) => {
+              const active = selectedCategory === c.id;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(c.id)}
+                  className="flex flex-col items-center gap-1 ui-focus"
+                  role="radio"
+                  aria-checked={active}
+                  aria-label={"カテゴリ " + c.name}
+                  style={{ fontSize: LAYOUT.categoryLabelPx }}
+                >
+                  <div
+                    className={"btn-radio-icon " + (active ? "btn-radio-active" : "")}
+                    style={{ width: LAYOUT.categoryIconPx, height: LAYOUT.categoryIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
+                  >
+                    {isUrl(c.icon)
+                      ? <img src={c.icon!} alt={c.name} style={{
+                          width: LAYOUT.categoryIconInnerImagePx, height: LAYOUT.categoryIconInnerImagePx,
+                          transform: "translate(" + LAYOUT.categoryIconInnerOffsetXPx + "px," + LAYOUT.categoryIconInnerOffsetYPx + "px)"
+                        }} />
+                      : <span style={{
+                          fontSize: LAYOUT.categoryIconInnerFontPx,
+                          transform: "translate(" + LAYOUT.categoryIconInnerOffsetXPx + "px," + LAYOUT.categoryIconInnerOffsetYPx + "px)"
+                        }}>{c.icon ?? c.name[0]}</span>
+                    }
+                  </div>
+                  <div className="btn-radio-label" style={{ fontSize: LAYOUT.categoryLabelPx }}>{c.name}</div>
+                </button>
+              );
+            })}
+          </div>
+        </aside>
+
+        {/* 中央：1行リスト（行全体タップで追加） */}
+        <main className="flex-1 overflow-auto relative z-0">
+          <div className="flex flex-col pr-1" style={{ gap: LAYOUT.listRowGapPx }}>
+            {visibleProducts.map((p) => (
+              <ProductCard key={p.id} product={p} qty={getQty(p.id)} onAdd={onAdd} />
+            ))}
+          </div>
+        </main>
+
+        {/* 右：注文 */}
+        <aside className="ios-section p-2 relative z-10" style={{ width: LAYOUT.rightColWidthPx }}>
+          <CartPanel
+            items={items}
+            onInc={onInc}
+            onDec={onDec}
+            onConfirm={onConfirm}
+            selectedPay={selectedPay}
+            onChangePay={setSelectedPay}
+          />
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+
+
+
+```
+
+## components/CartPanel.tsx
+
+```tsx
+import React from "react";
+import SlideToConfirm from "./SlideToConfirm";
+import { type Product } from "../data/catalog";
+import { LAYOUT } from "../lib/layout";
+
+type CartItem = { product: Product; qty: number };
+
+type CartPanelProps = {
+  items: CartItem[];
+  onInc: (id: string) => void;
+  onDec: (id: string) => void;
+  onConfirm: () => void;
+  paymentMethods?: { id: string; name: string; icon?: string }[];
+  selectedPay: string;
+  onChangePay: (id: string) => void;
+};
+
+const isUrl = (s?: string) => !!s && /^(https?:)?\/\//.test(s);
+
+export default function CartPanel({
+  items, onInc, onDec, onConfirm,
+  paymentMethods = [
+    { id: "cash", name: "現金" },
+    { id: "card", name: "カード" },
+    { id: "qr",  name: "QR"    },
+  ],
+  selectedPay, onChangePay,
+}: CartPanelProps) {
+  const total = items.reduce((s, it) => s + it.product.price * it.qty, 0);
+const handlePayClick = (e: React.MouseEvent, id: string) => { e.preventDefault(); e.stopPropagation(); onChangePay(id); };
+  const handleDec = (e: React.MouseEvent, id: string) => { e.preventDefault(); e.stopPropagation(); onDec(id); };
+  const handleInc = (e: React.MouseEvent, id: string) => { e.preventDefault(); e.stopPropagation(); onInc(id); };
+
+  return (
+    <div className="h-full flex flex-col gap-3">
+      {/* 支払い方法 */}
+      <div className="ios-section p-2">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center flex-wrap" role="radiogroup" aria-label="支払い方法" style={{ gap: LAYOUT.paymentIconGapPx }}>
+            {paymentMethods.map((m) => {
+              const active = m.id === selectedPay;
+              return (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={(e) => handlePayClick(e, m.id)}
+                  onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  className="flex flex-col items-center gap-1 ui-focus"
+                  role="radio"
+                  aria-checked={active}
+                  aria-label={"支払い方法 " + m.name}
+                >
+                  <div
+                    className={"btn-radio-icon " + (active ? "btn-radio-active" : "")}
+                    style={{ width: LAYOUT.payIconPx, height: LAYOUT.payIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
+                  >
+                    {isUrl(m.icon)
+                      ? <img src={m.icon!} alt={m.name} style={{
+                          width: LAYOUT.payIconInnerImagePx, height: LAYOUT.payIconInnerImagePx,
+                          transform: "translate(" + LAYOUT.payIconInnerOffsetXPx + "px," + LAYOUT.payIconInnerOffsetYPx + "px)"
+                        }} />
+                      : <span style={{
+                          fontSize: LAYOUT.payIconInnerFontPx,
+                          transform: "translate(" + LAYOUT.payIconInnerOffsetXPx + "px," + LAYOUT.payIconInnerOffsetYPx + "px)"
+                        }}>{m.icon ? m.icon : m.name[0]}</span>
+                    }
+                  </div>
+                  <div className="btn-radio-label" style={{ fontSize: LAYOUT.paymentLabelPx }}>{m.name}</div>
+                </button>
+              );
+            })}
+          </div>
+
+          
+        </div>
+      </div>
+
+      {/* 注文リスト */}
+      <div className="ios-section flex-1 overflow-auto">
+        {items.length === 0 ? (
+          <div className="p-3" style={{ color: "var(--text-muted)", fontSize: 12 }}>まだ商品がありません</div>
+        ) : (
+          <ul>
+            {items.map((it, idx) => (
+              <li key={it.product.id} className={"px-3 py-2 " + (idx>0 ? "ios-sep " : "") + "flex items-center gap-2"}>
+                <div className="flex-1 min-w-0">
+                  <div className="truncate" style={{ fontSize: LAYOUT.cartItemNamePx }}>{it.product.name}</div>
+                  <div style={{ color: "var(--text-muted)", fontSize: LAYOUT.cartItemPricePx }}>¥{it.product.price.toLocaleString()}</div>
+                </div>
+                <div className="flex items-center" style={{ gap: 6 }}>
+                  <button
+                    type="button"
+                    onClick={(e) => handleDec(e, it.product.id)}
+                    className="btn-round-sm"
+                    aria-label={it.product.name + " を1つ減らす"}
+                    style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
+                  >−</button>
+                  <div className="text-center" style={{ width: LAYOUT.cartQtyWidthPx, fontSize: LAYOUT.cartQtyFontPx }}>{it.qty}</div>
+                  <button
+                    type="button"
+                    onClick={(e) => handleInc(e, it.product.id)}
+                    className="btn-round-sm"
+                    aria-label={it.product.name + " を1つ増やす"}
+                    style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
+                  >＋</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* 合計 */}
+      <div className="ios-section px-3 py-2 flex items-center justify-between">
+        <span style={{ fontSize: LAYOUT.totalsLabelPx }}>合計</span>
+        <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>¥{total.toLocaleString()}</span>
+      </div>
+
+      {/* スライドして決済 */}
+      <SlideToConfirm onConfirm={onConfirm} />
+    </div>
+  );
+}
+
+
+
+```
+
+## components/ProductCard.tsx
+
+```tsx
+import React from "react";
+import { type Product } from "../data/catalog";
+import { LAYOUT } from "../lib/layout";
+
+type ProductCardProps = {
+  product: Product;
+  qty?: number;
+  onAdd: (p: Product) => void;
+};
+
+export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProps) {
+  const onActivate = () => onAdd(product);
+  const onKeyDown: React.KeyboardEventHandler<HTMLButtonElement> = (e) => {
+    if (e.currentTarget !== document.activeElement) return;
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onAdd(product); }
+  };
+
+  return (
+    <button
+      data-role="product-card"
+      type="button"
+      onClick={onActivate}
+      onKeyDown={onKeyDown}
+      className="row-card ui-tap ui-focus" style={{ position: "relative" }}
+      aria-label={product.name + " を追加"}
+    >
+      <div className="flex items-center gap-3">
+        {product.imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="rounded-xl object-cover"
+            style={{ width: LAYOUT.productImagePx, height: LAYOUT.productImagePx, border: "1px solid var(--border)" }}
+          />
+        ) : (
+          <div
+            className="rounded-xl"
+            style={{ width: LAYOUT.productImagePx, height: LAYOUT.productImagePx, background: "var(--surface-elev)", border: "1px solid var(--border)" }}
+          />
+        )}
+
+        <div className="flex-1 min-w-0">
+          <div
+            className="truncate font-semibold leading-tight"
+            style={{ fontSize: LAYOUT.productNamePx, transform: "translate(" + LAYOUT.productNameOffsetXPx + "px," + LAYOUT.productNameOffsetYPx + "px)" }}
+          >
+            {product.name}
+          </div>
+          <div
+            className="leading-tight"
+            style={{
+              fontSize: LAYOUT.productPricePx,
+              color: "var(--text-muted)",
+              transform: "translate(" + LAYOUT.productPriceOffsetXPx + "px," + LAYOUT.productPriceOffsetYPx + "px)"
+            }}
+          >
+            ¥{product.price.toLocaleString()}
+          </div>
+          {product.allergy?.length ? (
+            <div
+              className="flex flex-wrap gap-1 mt-1"
+              style={{ transform: "translate(" + LAYOUT.allergyOffsetXPx + "px," + LAYOUT.allergyOffsetYPx + "px)" }}
+            >
+              {product.allergy.slice(0, 8).map((al) => (
+                <span key={al} className="ios-chip" style={{ fontSize: LAYOUT.allergyChipFontPx }}>{al}</span>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
+        <div className="shrink-0" style={{ position: "absolute", top: LAYOUT.qtyBadgeOffsetTopPx, right: LAYOUT.qtyBadgeOffsetRightPx, zIndex: LAYOUT.qtyBadgeZIndex, pointerEvents: "none" }}>
+          <div
+            className="flex items-center justify-center"
+            style={{
+              background: "var(--badge-bg)",
+              color: "var(--badge-text)",
+              minWidth: LAYOUT.qtyBadgeMinWidthPx,
+              height: LAYOUT.qtyBadgeHeightPx,
+              paddingInline: LAYOUT.qtyBadgePaddingInlinePx,
+              fontSize: LAYOUT.qtyTextPx,
+              border: "1px solid var(--border)",
+              boxShadow: "var(--shadow-sm)",
+              // 四隅の角丸を個別指定
+              borderTopLeftRadius: LAYOUT.qtyBadgeRadiusTopLeftPx,
+              borderTopRightRadius: LAYOUT.qtyBadgeRadiusTopRightPx,
+              borderBottomRightRadius: LAYOUT.qtyBadgeRadiusBottomRightPx,
+              borderBottomLeftRadius: LAYOUT.qtyBadgeRadiusBottomLeftPx,
+            }}
+          >
+            {qty}
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+
+
+```
+
+## components/SlideToConfirm.tsx
+
+```tsx
+import React, { useRef, useState, useEffect } from "react";
+import { LAYOUT } from "../lib/layout";
+
+type SlideToConfirmProps = {
+  onConfirm: () => void;
+  disabled?: boolean;
+  label?: string;
+  className?: string;
+};
+
+export default function SlideToConfirm({
+  onConfirm, disabled = false, label = "スライドして決済", className = "",
+}: SlideToConfirmProps) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const knobRef = useRef<HTMLButtonElement | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [pos, setPos] = useState(0);
+  const [pointerId, setPointerId] = useState<number | null>(null);
+  const [trackW, setTrackW] = useState(0);
+
+  const knobPx   = LAYOUT.slideKnobPx;
+  const confirmAt= LAYOUT.slideConfirmAt;
+  const insetL   = LAYOUT.slideInsetStartPx;
+  const insetR   = LAYOUT.slideInsetEndPx;
+
+  const maxRange = Math.max(0, trackW - knobPx - insetL - insetR);
+
+  useEffect(() => {
+    const updateW = () => setTrackW(trackRef.current?.clientWidth || 0);
+    updateW(); window.addEventListener("resize", updateW); return () => window.removeEventListener("resize", updateW);
+  }, []);
+
+  const clamp = (v:number,min:number,max:number)=>Math.max(min,Math.min(max,v));
+  const updateByClientX = (clientX:number) => {
+    if (!trackRef.current) return;
+    const rect = trackRef.current.getBoundingClientRect();
+    const rel = clamp(clientX - (rect.left + insetL), 0, maxRange);
+    setPos(rel / (maxRange || 1));
+  };
+
+  useEffect(() => {
+    const onPointerMove = (e: PointerEvent) => { if (!dragging) return; e.preventDefault(); e.stopPropagation(); updateByClientX(e.clientX); };
+    const onPointerUp   = (e: PointerEvent) => {
+      if (!dragging) return; e.preventDefault(); e.stopPropagation();
+      if (pointerId !== null && knobRef.current?.hasPointerCapture(pointerId)) { knobRef.current.releasePointerCapture(pointerId); }
+      setDragging(false);
+      if (pos >= confirmAt && !disabled) { setPos(1); onConfirm(); } else { setPos(0); }
+    };
+    window.addEventListener("pointermove", onPointerMove, { passive: false });
+    window.addEventListener("pointerup", onPointerUp, { passive: false });
+    return () => { window.removeEventListener("pointermove", onPointerMove); window.removeEventListener("pointerup", onPointerUp); };
+  }, [dragging, pos, disabled, onConfirm, pointerId, maxRange]);
+
+  const startDrag = (e: React.PointerEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    setDragging(true); setPointerId(e.pointerId);
+    knobRef.current?.setPointerCapture(e.pointerId);
+    updateByClientX(e.clientX);
+  };
+
+  const knobLeftPx = insetL + pos * maxRange;
+  const fillW = Math.max(knobLeftPx + knobPx, knobPx);
+
+  return (
+    <div className={"w-full select-none " + (disabled ? "opacity-50 pointer-events-none " : "") + (className || "")}>
+      <div
+        ref={trackRef}
+        className="relative h-11 w-full rounded-full overflow-hidden"
+        aria-label={label}
+        style={{
+          background: "linear-gradient(to bottom, var(--surface), var(--surface-elev))",
+          border: "1px solid var(--border)",
+          boxShadow: "var(--shadow-sm)"
+        }}
+      >
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ color: "var(--text-muted)", fontSize: LAYOUT.slideLabelPx }}>
+          {label}
+        </div>
+
+        <div className="absolute top-0 left-0 h-full" style={{ width: fillW, background: "var(--slider-fill)" }} />
+
+        <button
+          ref={knobRef}
+          type="button"
+          className="absolute top-1/2 -translate-y-1/2 ui-tap ui-focus"
+          style={{
+            width: knobPx, height: knobPx, left: knobLeftPx, borderRadius: "9999px",
+            background: "linear-gradient(to bottom, var(--knob-start), var(--knob-end))",
+            border: "1px solid var(--border)",
+            boxShadow: "var(--shadow-sm)"
+          }}
+          onPointerDown={startDrag}
+          aria-label={label}
+        />
+      </div>
+    </div>
+  );
+}
+
+```
+
+## lib/layout.ts
+
+```ts
+/**
+ * レイアウト数値の一元管理（UI 全体で参照）
+ * 位置調整は transform: translate(X, Y) で適用
+ */
+export const LAYOUT = {
+  /* === フレーム（画面の最外余白 4辺）=== */
+  outerPaddingTopPx:    20,  // pages/index.tsx …… 画面最外の上余白
+  outerPaddingRightPx:  1,   // 右余白
+  outerPaddingBottomPx: 1,   // 下余白
+  outerPaddingLeftPx:   1,   // 左余白
+  columnGapPx:          1,   // 左・中央・右カラム間の隙間
+
+  /* === カラム幅 === */
+  leftColWidthPx:   80,      // 左カラム（カテゴリ）
+  rightColWidthPx:  300,     // 右カラム（注文）
+
+  /* === カテゴリ（左カラム） === */
+  categoryIconPx:           60, // 丸アイコン直径
+  categoryIconGapPx:        12, // アイコン間隔
+  categoryLabelPx:          13, // ラベル文字サイズ
+  // アイコン内コンテンツ（画像/絵文字/文字）の大きさ・位置
+  categoryIconInnerFontPx:  34, // 絵文字/文字のフォントサイズ
+  categoryIconInnerImagePx: 36, // 画像を使う場合の内側画像サイズ
+  categoryIconInnerOffsetXPx: 0, // 内側コンテンツの X 方向オフセット
+  categoryIconInnerOffsetYPx: 0, // 内側コンテンツの Y 方向オフセット
+
+  /* === 中央リスト === */
+  listRowGapPx:        1,    // 1行ごとの間隔
+  productNamePx:      18,    // 商品名 文字サイズ
+  productPricePx:     18,    // 価格 文字サイズ
+  allergyChipFontPx:  14,    // アレルギータグ 文字サイズ
+  productImagePx:    100,    // 商品画像の縦横
+
+  // 中央リスト内の各表示位置（px 単位のオフセット）
+  productNameOffsetXPx:   0,
+  productNameOffsetYPx:   -5,
+  productPriceOffsetXPx:  0,
+  productPriceOffsetYPx:  3,
+  allergyOffsetXPx:       0,
+  allergyOffsetYPx:       9,
+
+  /* === 数量バッジ（中央リスト右端） === */
+  qtyBadgeMinWidthPx: 60,
+  qtyBadgeHeightPx:  118,
+  qtyTextPx:          30,
+  
+  
+  qtyBadgeOffsetTopPx: -1,   // components/ProductCard.tsx - overlap upwards (px, negative to go outside top)
+  qtyBadgeOffsetRightPx: 0, // components/ProductCard.tsx - overlap to the right (px, negative to go outside right)
+  qtyBadgeZIndex: 2,         // components/ProductCard.tsx - stacking above the card surfaceqtyBadgePaddingInlinePx: 0,  // components/ProductCard.tsx - qty badge horizontal padding (0 = no inner padding)
+  qtyBadgeOverflowRightPx: 0,  // components/ProductCard.tsx - push qty badge to overflow right (px, 0 = disabled)// ⬇ 追加：数量バッジの四隅角丸（px）— 個別に調整可能（既定は 9999 でピル形）
+  qtyBadgeRadiusTopLeftPx:     0, // components/ProductCard.tsx …… 数量バッジの左上角
+  qtyBadgeRadiusTopRightPx:    15, // 右上角
+  qtyBadgeRadiusBottomRightPx: 15, // 右下角
+  qtyBadgeRadiusBottomLeftPx:  0, // 左下角
+
+  /* === 支払い方法（右カラム上部） === */
+  payIconPx:           45,   // 丸アイコン直径
+  paymentIconGapPx:     7,   // アイコン間隔
+  paymentLabelPx:      12,   // ラベル文字サイズ
+  selectedLabelPx:     15,   // 「選択中」表示の文字
+  // アイコン内コンテンツ（画像/絵文字/文字）の大きさ・位置
+  payIconInnerFontPx:  24,   // 絵文字/文字のフォントサイズ
+  payIconInnerImagePx: 26,   // 画像の場合のサイズ
+  payIconInnerOffsetXPx: 0,  // X 方向オフセット
+  payIconInnerOffsetYPx: 0,  // Y 方向オフセット
+
+  /* === 注文リスト（右カラム中部） === */
+  cartItemNamePx:   17,      // 注文名 文字サイズ
+  cartItemPricePx:  15,      // 単価 文字サイズ
+  plusMinusPx:      24,      // ±ボタン径
+  plusMinusFontPx:  14,      // ±アイコン文字サイズ
+  cartQtyWidthPx:   22,      // ±の間の数量表示の幅
+  cartQtyFontPx:    21,      // ±の間の数量文字サイズ
+
+  /* === 合計行（右カラム下部） === */
+  totalsLabelPx:    18,
+  totalsValuePx:    18,
+
+  /* === スライダー（決済） === */
+  slideKnobPx:        42,    // ノブ直径
+  slideConfirmAt:     0.90,  // 確定閾値（0..1）
+  slideInsetStartPx:  1,     // 左端からの開始インセット
+  slideInsetEndPx:    6,     // 右端からの終了インセット
+  slideLabelPx:       16,    // ラベル文字サイズ
+} as const;
+
+
+
+```
+
+## lib/theme.ts
+
+```ts
+/**
+ * lib/theme.ts
+ * ─────────────────────────────────────────────────────────────
+ * 「色・背景・影・文字色」を一括管理し、CSS 変数として :root に適用します。
+ * 変更の仕方：
+ *   1) THEME_LIGHT.colors の値を変える   → すぐ UI に反映（ThemeProvider 経由）
+ *   2) 必要なら THEME_DARK も用意して、<ThemeProvider theme="dark"> で切替
+ *   3) さらに細かく変えたい場合は、applyTheme() の CSS 変数割当を増やす
+ *
+ * どこに効く？
+ *   - Body 背景色              : appBg → --bg-app（globals.css の body 背景）
+ *   - 基本文字色/サブ文字色    : text / textMuted → --text / --text-muted
+ *   - 面の色/境界/影           : surface / border / shadows → .ios-section / .row-card / .btn-round-sm など
+ *   - Chip                     : chipBg / chipBorder / chipText → .ios-chip
+ *   - ラジオ風丸（カテゴリ/決済）: radioBg / radioActive → .btn-radio-icon / .btn-radio-active
+ *   - 小ボタン（±など）        : buttonBg / buttonBorder / buttonText → .btn-round-sm
+ *   - 個数バッジ               : badgeBg / badgeText → ProductCard の数量表示
+ *   - スライダー               : sliderTrack / sliderFill / knobStart / knobEnd → SlideToConfirm
+ *   - スクロールバー           : scrollbarThumb → すべてのスクロールバー
+ */
+
+export type Theme = {
+  name: string;
+
+  /** 色系（＝CSS変数にマップされ UI 各所で参照） */
+  colors: {
+    appBg: string;        // Body 背景（--bg-app）: 画面全体の地色
+
+    text: string;         // 通常の文字色（--text）
+    textMuted: string;    // 補助テキスト（--text-muted）: 価格・サブ情報・ラベルなど
+
+    surface: string;          // 面の地色（--surface）: .ios-section / .row-card / 小ボタンのベース
+    surfaceElevated: string;  // やや持ち上がった面（--surface-elev）: 画像プレースホルダ、スライダートラックのグラデ等
+    border: string;           // 枠線（--border）: 面/丸/ボタン/区切り線の境界色
+
+    chipBg: string;       // チップ背景（--chip-bg）: アレルギータグ等
+    chipBorder: string;   // チップ枠線（--chip-border）
+    chipText?: string;    // チップ文字（--chip-text）: 未指定なら --text-muted を使用
+
+    radioBg: string;      // 丸アイコンの地（--radio-bg）: カテゴリ/支払いアイコンの内側
+    radioActive: string;  // アクティブ装飾（--accent）: 選択リングや focus リング
+
+    buttonBg: string;     // 小ボタン背景（--btn-bg）: ±ボタンなど
+    buttonBorder: string; // 小ボタン枠線（--btn-border）
+    buttonText?: string;  // 小ボタン文字（--btn-text）
+
+    badgeBg: string;      // 数量バッジ背景（--badge-bg）
+    badgeText?: string;   // 数量バッジ文字（--badge-text）
+
+    sliderTrack: string;  // スライダートラックの薄い塗り（--slider-track）
+    sliderFill: string;   // スライダーフィル（--slider-fill）
+    knobStart: string;    // ノブ上側グラデ起点（--knob-start）
+    knobEnd: string;      // ノブ下側グラデ終点（--knob-end）
+
+    scrollbarThumb: string; // スクロールバーつまみ（--scrollbar-thumb）
+  };
+
+  /** 影系（＝CSS変数にマップされ UI 各所で参照） */
+  shadows: {
+    sm: string;           // --shadow-sm : 面やボタンの基本シャドウ
+    lg: string;           // --shadow-lg : 大きめの持ち上げ（カード等）
+  };
+};
+
+/** ライトテーマ（既定）: iOS ライクな清潔感 */
+export const THEME_LIGHT: Theme = {
+  name: "light",
+  colors: {
+    appBg: "#f5f5f7",            // Body 背景
+
+    text: "#111827",             // 文字（濃いグレー）
+    textMuted: "#6b7280",        // 補助文字（薄いグレー）
+
+    surface: "#ffffff",          // 面（白）
+    surfaceElevated: "#f3f4f6",  // やや持ち上げ面（薄グレー）
+    border: "rgba(0,0,0,0.08)",  // 枠線（ごく薄い黒）
+
+    chipBg: "#f3f4f6",           // チップ背景
+    chipBorder: "rgba(0,0,0,0.10)",
+    chipText: "#374151",
+
+    radioBg: "#ffffff",          // 丸アイコンの地
+    radioActive: "rgba(0,0,0,0.25)", // 選択リング/フォーカスのアクセント
+
+    buttonBg: "#ffffff",         // 小ボタン（±）
+    buttonBorder: "rgba(0,0,0,0.10)",
+    buttonText: "#111827",
+
+    badgeBg: "#ffffff",          // 数量バッジ
+    badgeText: "#111827",
+
+    sliderTrack: "rgba(0,0,0,0.05)", // トラック地
+    sliderFill: "rgba(0,0,0,0.08)",  // 進捗の塗り
+    knobStart: "#ffffff",            // ノブ上グラデ
+    knobEnd: "#e5e7eb",              // ノブ下グラデ
+
+    scrollbarThumb: "rgba(0,0,0,0.10)",
+  },
+  shadows: {
+    sm: "0 1px 1px rgba(0,0,0,0.04)",
+    lg: "0 10px 30px rgba(0,0,0,0.06)",
+  },
+};
+
+/** ダークテーマ（雛形）: 必要に応じて値を調整して使ってください */
+export const THEME_DARK: Theme = {
+  ...THEME_LIGHT,
+  name: "dark",
+  colors: {
+    ...THEME_LIGHT.colors,
+    appBg: "#0b0b0c",
+    text: "#f3f4f6",
+    textMuted: "#9ca3af",
+    surface: "#151517",
+    surfaceElevated: "#1b1c1f",
+    border: "rgba(255,255,255,0.12)",
+    chipBg: "#1f2023",
+    chipBorder: "rgba(255,255,255,0.16)",
+    radioBg: "#1b1c1f",
+    buttonBg: "#1b1c1f",
+    badgeBg: "#1b1c1f",
+    sliderTrack: "rgba(255,255,255,0.08)",
+    sliderFill: "rgba(255,255,255,0.14)",
+    knobStart: "#2a2b2f",
+    knobEnd: "#1b1c1f",
+    scrollbarThumb: "rgba(255,255,255,0.16)",
+    radioActive: "rgba(255,255,255,0.35)",
+  },
+  shadows: {
+    sm: "0 1px 1px rgba(0,0,0,0.6)",
+    lg: "0 10px 30px rgba(0,0,0,0.55)",
+  },
+};
+
+/**
+ * applyTheme(theme)
+ * ─────────────────────────────────────────────────────────────
+ * Theme.colors / shadows を CSS 変数へセットします。
+ * 変数名と利用先（抜粋）：
+ *   --bg-app         : globals.css body 背景
+ *   --text           : ベース文字色
+ *   --text-muted     : 価格/ラベルなど補助色
+ *   --surface        : .ios-section / .row-card / .btn-round-sm 背景
+ *   --surface-elev   : 画像プレースホルダ/スライダー背景のグラデ下側
+ *   --border         : 面/丸/ボタンの枠線、区切り .ios-sep
+ *   --chip-bg/…      : .ios-chip
+ *   --radio-bg       : .btn-radio-icon の内側
+ *   --accent         : .btn-radio-active のリング、.ui-focus の focus-outline
+ *   --btn-bg/…       : .btn-round-sm（±ボタン）
+ *   --badge-bg/…     : 数量バッジ（ProductCard）
+ *   --slider-*       : SlideToConfirm のトラック/フィル/ノブ
+ *   --scrollbar-thumb: 全体スクロールバー
+ *   --shadow-sm/lg   : 面/ボタンの影
+ */
+export function applyTheme(theme: Theme) {
+  if (typeof document === "undefined") return; // SSR では何もしない
+  const r = document.documentElement.style;
+  const c = theme.colors, s = theme.shadows;
+
+  // ベース配色
+  r.setProperty("--bg-app", c.appBg);
+  r.setProperty("--text", c.text);
+  r.setProperty("--text-muted", c.textMuted);
+
+  // 面・境界
+  r.setProperty("--surface", c.surface);
+  r.setProperty("--surface-elev", c.surfaceElevated);
+  r.setProperty("--border", c.border);
+
+  // チップ
+  r.setProperty("--chip-bg", c.chipBg);
+  r.setProperty("--chip-border", c.chipBorder);
+  if (c.chipText) r.setProperty("--chip-text", c.chipText);
+
+  // ラジオ丸（カテゴリ/支払い）
+  r.setProperty("--radio-bg", c.radioBg);
+  r.setProperty("--accent", c.radioActive);
+
+  // 小ボタン（±）
+  r.setProperty("--btn-bg", c.buttonBg);
+  r.setProperty("--btn-border", c.buttonBorder);
+  if (c.buttonText) r.setProperty("--btn-text", c.buttonText);
+
+  // 数量バッジ
+  r.setProperty("--badge-bg", c.badgeBg);
+  if (c.badgeText) r.setProperty("--badge-text", c.badgeText);
+
+  // スライダー
+  r.setProperty("--slider-track", c.sliderTrack);
+  r.setProperty("--slider-fill", c.sliderFill);
+  r.setProperty("--knob-start", c.knobStart);
+  r.setProperty("--knob-end", c.knobEnd);
+
+  // スクロールバー
+  r.setProperty("--scrollbar-thumb", c.scrollbarThumb);
+
+  // 影
+  r.setProperty("--shadow-sm", s.sm);
+  r.setProperty("--shadow-lg", s.lg);
+}
+
+```
