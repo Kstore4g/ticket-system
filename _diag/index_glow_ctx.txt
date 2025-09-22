@@ -1,0 +1,2 @@
+          className={"ios-section p-2 hidden sm:block relative z-10" + (selectedCategory === cat.id ? " cat-selected" : "")}
+        <aside className={"ios-section p-2 relative z-10" + (selectedCategory === cat.id ? " cat-selected" : "")} style={{ width: LAYOUT.rightColWidthPx }}>

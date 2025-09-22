@@ -64,7 +64,7 @@ export default function HomePage() {
       >
         {/* 左：カテゴリ */}
         <aside
-          className={"ios-section p-2 hidden sm:block relative z-10"}
+          className={"cat-icon ios-section p-2 hidden sm:block relative z-10" + (selectedCategory === cat.id ? " cat-selected" : "")}
           role="radiogroup"
           aria-label="カテゴリ"
           style={{ width: LAYOUT.leftColWidthPx }}
@@ -115,7 +115,7 @@ export default function HomePage() {
         </main>
 
         {/* 右：注文 */}
-        <aside className={"ios-section p-2 relative z-10"} style={{ width: LAYOUT.rightColWidthPx }}>
+        <aside className={"cat-icon ios-section p-2 relative z-10" + (selectedCategory === cat.id ? " cat-selected" : "")} style={{ width: LAYOUT.rightColWidthPx }}>
           <CartPanel
             items={items}
             onInc={onInc}

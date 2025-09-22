@@ -4,30 +4,7 @@ import CartPanel from "../components/CartPanel";
 import { LAYOUT } from "../lib/layout";
 import { categories, products, type Product as ProductType } from "../data/catalog";
 
-
-type CategoryAny = { id?: string; name?: string; code?: string; icon?: string };
-function productCategoryCandidates(p: any): string[] {
-  return [
-    p.categoryId, p.category_id, p.category, p.categoryCode, p.category_code,
-    p.category?.id, p.category?.code, p.category?.name
-  ].filter(Boolean).map(String);
-}
-function categoryCandidates(c: CategoryAny | undefined): string[] {
-  if (!c) return [];
-  const anyC: any = c;
-  return [c.id, c.name, anyC.code].filter(Boolean).map(String);
-}
-function belongsToCategory(p: any, cid: string): boolean {
-  if (!cid || cid === "all") return true;
-  const pc = productCategoryCandidates(p);
-  // 1) 直ヒット（id/name/code いずれか）
-  if (pc.includes(String(cid))) return true;
-  // 2) 選択中カテゴリの候補と突き合わせ
-  const catFromId = categories.find(c => String(c.id) === String(cid));
-  const catFromAny = catFromId ?? categories.find(c => categoryCandidates(c).includes(String(cid)));
-  const cc = categoryCandidates(catFromAny);
-  return pc.some(v => cc.includes(v));
-}type Item = { product: ProductType; qty: number };
+type Item = { product: ProductType; qty: number };
 const isUrl = (s?: string) => !!s && /^(https?:)?\/\//.test(s);
 
 export default function HomePage() {
@@ -35,7 +12,7 @@ export default function HomePage() {
   const [items, setItems] = useState<Item[]>([]);
   const [selectedPay, setSelectedPay] = useState<string>("cash");
 
-  const visibleProducts = useMemo(() => products.filter(p => belongsToCategory(p, selectedCategory)), [selectedCategory]);
+  const visibleProducts = useMemo(() => products.filter(p => p.categoryId === selectedCategory), [selectedCategory]);
 
   const onAdd = (p: ProductType) => {
     setItems((prev) => {
@@ -64,9 +41,10 @@ export default function HomePage() {
       >
         {/* 左：カテゴリ */}
         <aside
-          className={"ios-section p-2 hidden sm:block relative z-10"}
+          className="ios-section p-2 hidden sm:block relative z-10"
           role="radiogroup"
           aria-label="カテゴリ"
+          onClickCapture={(e) => e.stopPropagation()}
           style={{ width: LAYOUT.leftColWidthPx }}
         >
           <div className="grid auto-rows-min place-items-center" style={{ gap: LAYOUT.categoryIconGapPx }}>
@@ -115,7 +93,7 @@ export default function HomePage() {
         </main>
 
         {/* 右：注文 */}
-        <aside className={"ios-section p-2 relative z-10"} style={{ width: LAYOUT.rightColWidthPx }}>
+        <aside className="ios-section p-2 relative z-10" onClickCapture={(e) => e.stopPropagation()} style={{ width: LAYOUT.rightColWidthPx }}>
           <CartPanel
             items={items}
             onInc={onInc}
@@ -129,6 +107,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-
-

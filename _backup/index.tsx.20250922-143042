@@ -64,7 +64,7 @@ export default function HomePage() {
       >
         {/* 左：カテゴリ */}
         <aside
-          className={"ios-section p-2 hidden sm:block relative z-10"}
+          className={"ios-section p-2 hidden sm:block relative z-10" + (selectedCategory === cat.id ? " cat-selected" : "")}
           role="radiogroup"
           aria-label="カテゴリ"
           style={{ width: LAYOUT.leftColWidthPx }}

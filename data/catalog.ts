@@ -35,10 +35,12 @@ export const categories: Category[] = [
 ];
 
 export const products: Product[] = [
-  { id: "1", categoryId: "set",    name: "ハンバーガー",   price: 500, cost: 200, allergy: ["小麦","乳"] },
-  { id: "2", categoryId: "set",    name: "チーズバーガー", price: 600, cost: 250, allergy: ["小麦","乳"] },
+  { id: "1", categoryId: "set",    name: "Aセット",   price: 1500, cost: 200, allergy: ["小麦","乳"] },
+  { id: "2", categoryId: "set",    name: "Bセット", price: 1600, cost: 250, allergy: ["小麦","乳"] },
   { id: "3", categoryId: "single", name: "ポテト",         price: 300, cost: 80  },
   { id: "4", categoryId: "drink",  name: "ドリンク",       price: 200, cost: 50  },
+  { id: "5", categoryId: "single", name: "ハンバーガー",         price: 300, cost: 80  },
+  { id: "6", categoryId: "single",  name: "チーズバーガー",       price: 200, cost: 50  },
 ];
 
 /** 補助関数 */

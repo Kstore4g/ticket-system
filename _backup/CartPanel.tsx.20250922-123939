@@ -27,7 +27,9 @@ export default function CartPanel({
   selectedPay, onChangePay,
 }: CartPanelProps) {
   const total = items.reduce((s, it) => s + it.product.price * it.qty, 0);
-const handlePayClick = (e: React.MouseEvent, id: string) => { e.preventDefault(); e.stopPropagation(); onChangePay(id); };
+  const selectedPayName = paymentMethods.find(m => m.id === selectedPay)?.name ?? "—";
+
+  const handlePayClick = (e: React.MouseEvent, id: string) => { e.preventDefault(); e.stopPropagation(); onChangePay(id); };
   const handleDec = (e: React.MouseEvent, id: string) => { e.preventDefault(); e.stopPropagation(); onDec(id); };
   const handleInc = (e: React.MouseEvent, id: string) => { e.preventDefault(); e.stopPropagation(); onInc(id); };
 
@@ -51,7 +53,7 @@ const handlePayClick = (e: React.MouseEvent, id: string) => { e.preventDefault()
                   aria-label={"支払い方法 " + m.name}
                 >
                   <div
-                    className={"btn-radio-icon " + (active ? "border-glow-sky-400 glow-ring border-2" : "border") + " transition-shadow"}
+                    className={"btn-radio-icon " + (active ? "btn-radio-active" : "")}
                     style={{ width: LAYOUT.payIconPx, height: LAYOUT.payIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
                   >
                     {isUrl(m.icon)
@@ -71,7 +73,10 @@ const handlePayClick = (e: React.MouseEvent, id: string) => { e.preventDefault()
             })}
           </div>
 
-          
+          <div className="shrink-0 flex items-center gap-2" style={{ color: "var(--text-muted)", fontSize: LAYOUT.selectedLabelPx }}>
+            <span>選択中</span>
+            <span className="ios-chip">{selectedPayName}</span>
+          </div>
         </div>
       </div>
 
@@ -121,5 +126,4 @@ const handlePayClick = (e: React.MouseEvent, id: string) => { e.preventDefault()
     </div>
   );
 }
-
 

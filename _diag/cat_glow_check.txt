@@ -1,0 +1,20 @@
+cssPath: styles/globals.css
+.cat-icon{ position: relative; overflow: visible; }
+@keyframes cat-ring-glow {
+.cat-icon.cat-selected,
+.cat-icon.active,
+.cat-icon.is-active,
+.cat-icon.selected,
+.cat-icon[aria-selected="true"],
+.cat-icon[aria-pressed="true"],
+.cat-icon[data-selected="true"],
+.cat-icon[data-active="true"] {
+.cat-icon.cat-selected::after,
+.cat-icon.active::after,
+.cat-icon.is-active::after,
+.cat-icon.selected::after,
+.cat-icon[aria-selected="true"]::after,
+.cat-icon[aria-pressed="true"]::after,
+.cat-icon[data-selected="true"]::after,
+.cat-icon[data-active="true"]::after {
+  animation: cat-ring-glow 1.6s ease-in-out infinite;

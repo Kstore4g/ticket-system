@@ -51,7 +51,7 @@ const handlePayClick = (e: React.MouseEvent, id: string) => { e.preventDefault()
                   aria-label={"支払い方法 " + m.name}
                 >
                   <div
-                    className={"btn-radio-icon " + (active ? "border-glow-sky-400 glow-ring border-2" : "border") + " transition-shadow"}
+                    className={"btn-radio-icon " + (active ? "btn-radio-active" : "")}
                     style={{ width: LAYOUT.payIconPx, height: LAYOUT.payIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
                   >
                     {isUrl(m.icon)

@@ -95,7 +95,7 @@ body {
     border: 1px solid var(--border);
     border-radius: 9999px;
     box-shadow: var(--shadow-sm);
-   position: relative;  overflow: visible;}
+   position: relative; }
   .btn-radio-active {
   /* keep base background */
   background: var(--radio-bg);
@@ -143,51 +143,3 @@ body {
   animation: ring-glow 1.6s ease-in-out infinite;
 }
 
-
-@keyframes ring-glow {
-  0%,100% { box-shadow: 0 0 0 2px var(--accent, rgba(56,189,248,.9)), 0 0 10px var(--accent, rgba(56,189,248,.9)); }
-  50%     { box-shadow: 0 0 0 2px var(--accent, rgba(56,189,248,.9)), 0 0 16px var(--accent, rgba(56,189,248,.9)); }
-}
-.glow-ring::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 9999px;
-  pointer-events: none;
-  box-shadow: 0 0 0 2px var(--accent, rgba(56,189,248,.9)), 0 0 12px var(--accent, rgba(56,189,248,.9));
-  animation: ring-glow 1.6s ease-in-out infinite;
-}
-
-.cat-icon{ position: relative; overflow: visible; }
-
-@keyframes cat-ring-glow {
-  0%,100% { box-shadow: 0 0 0 2px var(--accent, rgba(56,189,248,.9)), 0 0 10px var(--accent, rgba(56,189,248,.9)); }
-  50%     { box-shadow: 0 0 0 2px var(--accent, rgba(56,189,248,.9)), 0 0 16px var(--accent, rgba(56,189,248,.9)); }
-}
-/* 「選択状態」を広めに拾う：class/aria/data どれでもOK */
-.cat-icon.cat-selected,
-.cat-icon.active,
-.cat-icon.is-active,
-.cat-icon.selected,
-.cat-icon[aria-selected="true"],
-.cat-icon[aria-pressed="true"],
-.cat-icon[data-selected="true"],
-.cat-icon[data-active="true"] {
-  border: 2px solid var(--accent, rgba(56,189,248,.9));
-}
-.cat-icon.cat-selected::after,
-.cat-icon.active::after,
-.cat-icon.is-active::after,
-.cat-icon.selected::after,
-.cat-icon[aria-selected="true"]::after,
-.cat-icon[aria-pressed="true"]::after,
-.cat-icon[data-selected="true"]::after,
-.cat-icon[data-active="true"]::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 9999px;
-  pointer-events: none;
-  box-shadow: 0 0 0 2px var(--accent, rgba(56,189,248,.9)), 0 0 12px var(--accent, rgba(56,189,248,.9));
-  animation: cat-ring-glow 1.6s ease-in-out infinite;
-}

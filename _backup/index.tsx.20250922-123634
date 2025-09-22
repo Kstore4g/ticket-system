@@ -64,7 +64,7 @@ export default function HomePage() {
       >
         {/* 左：カテゴリ */}
         <aside
-          className={"ios-section p-2 hidden sm:block relative z-10"}
+          className="ios-section p-2 hidden sm:block relative z-10"
           role="radiogroup"
           aria-label="カテゴリ"
           style={{ width: LAYOUT.leftColWidthPx }}
@@ -115,7 +115,7 @@ export default function HomePage() {
         </main>
 
         {/* 右：注文 */}
-        <aside className={"ios-section p-2 relative z-10"} style={{ width: LAYOUT.rightColWidthPx }}>
+        <aside className="ios-section p-2 relative z-10" onClickCapture={(e) => e.stopPropagation()} style={{ width: LAYOUT.rightColWidthPx }}>
           <CartPanel
             items={items}
             onInc={onInc}
@@ -129,6 +129,5 @@ export default function HomePage() {
     </div>
   );
 }
-
 
 
