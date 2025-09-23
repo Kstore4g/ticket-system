@@ -41,20 +41,23 @@ export const LAYOUT = {
 
   /* === 数量バッジ（中央リスト右端） === */
   qtyBadgeMinWidthPx: 60,
-  qtyBadgeHeightPx:  118,
-  qtyTextPx:          30,
-  
-  
-  qtyBadgeOffsetTopPx: -1,   // components/ProductCard.tsx - overlap upwards (px, negative to go outside top)
-  qtyBadgeOffsetRightPx: 0, // components/ProductCard.tsx - overlap to the right (px, negative to go outside right)
-  qtyBadgeZIndex: 2,         // components/ProductCard.tsx - stacking above the card surfaceqtyBadgePaddingInlinePx: 0,  // components/ProductCard.tsx - qty badge horizontal padding (0 = no inner padding)
-  qtyBadgeOverflowRightPx: 0,  // components/ProductCard.tsx - push qty badge to overflow right (px, 0 = disabled)// ⬇ 追加：数量バッジの四隅角丸（px）— 個別に調整可能（既定は 9999 でピル形）
-  qtyBadgeRadiusTopLeftPx:     0, // components/ProductCard.tsx …… 数量バッジの左上角
-  qtyBadgeRadiusTopRightPx:    15, // 右上角
-  qtyBadgeRadiusBottomRightPx: 15, // 右下角
-  qtyBadgeRadiusBottomLeftPx:  0, // 左下角
+  qtyBadgeHeightPx: 118,
+  qtyTextPx: 30,
 
-  /* === 支払い方法（右カラム上部） === */
+  qtyBadgeOffsetTopPx: -1,
+  qtyBadgeOffsetRightPx: 0,
+  qtyBadgeZIndex: 2,
+
+  qtyBadgePaddingInlinePx: 0,
+  qtyBadgeOverflowRightPx: 0,
+
+  // 角丸（数量バッジ）
+  qtyBadgeRadiusTopLeftPx: 0,
+  qtyBadgeRadiusTopRightPx: 15,
+  qtyBadgeRadiusBottomRightPx: 15,
+  qtyBadgeRadiusBottomLeftPx: 0,
+
+/* === 支払い方法（右カラム上部） === *//* === 支払い方法（右カラム上部） === */
   payIconPx:           45,   // 丸アイコン直径
   paymentIconGapPx:     7,   // アイコン間隔
   paymentLabelPx:      12,   // ラベル文字サイズ
