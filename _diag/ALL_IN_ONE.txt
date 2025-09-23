@@ -1,68 +1,23 @@
 ==============================
 = HANDOFF: ALL IN ONE (TXT) =
 ==============================
-Generated : 2025-09-23 14:30:32 +09:00
+Generated : 2025-09-23 16:13:08 +09:00
 Output    : _diag\ALL_IN_ONE.txt
 
 [Env]
 Node : v22.19.0
 NPM  : 10.9.3
-OS   : Windows_NT (PowerShell 7.5.3)
+OS   : Microsoft Windows 11 Pro
 
 [Git]
 Branch      : hotfix/glow-qty-20250923
-Last Commit : 036628b 2025-09-23 14:25:13 +0900 IK_PC fix: normalize glow CSS & restore qty badge block; regen ALL_IN_ONE
+Last Commit : 6e685b7 2025-09-23 15:01:01 +0900 IK_PC 繝ｬ繧､繧｢繧ｦ繝郁ｪｿ謨ｴ縲繧ｹ繝ｩ繧､繝
 
-Note: .env* は安全のため除外します（必要ならあとで追記）。=====================
-= SPOT_READ (8番)   =
-=====================
-== tailwind.config.js ==
-  content: [
-  plugins: [require("twglow")]
-
-== styles/globals.css (glow block) ==
-/* === glow ring (category/payments) === */
-.glow-ring{ position:relative; z-index:0; }
-.glow-ring::after{
-  content:"";
-  position:absolute;
-  inset: calc(-1 * var(--glow-ring-width,2px));
-  border-radius:9999px;
-  pointer-events:none;
-  z-index:1;
-  box-shadow:
-    0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)),
-    0 0 var(--glow-blur,12px) var(--glow-color,rgba(56,189,248,.9));
-  animation:ring-glow 1.6s ease-in-out infinite;
-}
-@keyframes ring-glow{
-  0%,100%{
-    box-shadow:
-      0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)),
-      0 0 calc(var(--glow-blur,12px)*0.85) var(--glow-color,rgba(56,189,248,.9));
-  }
-  50%{
-    box-shadow:
-      0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)),
-      0 0 calc(var(--glow-blur,12px)*1.2) var(--glow-color,rgba(56,189,248,.9));
-  }
-}
-
-/* rectangle glow (inherit radius) */
-.glow-box{ position: relative; overflow: visible; }
-.glow-box::after{
-  content:"";
-  position:absolute;
-  inset: calc(-1 * var(--glow-ring-width,2px));
-  border-radius: inherit;
-  pointer-events:none;
-  box-shadow:
-    0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
-    0 0 var(--glow-blur,12px) var(--glow-color, rgba(56,189,248,.9));
-  animation: ring-glow 1.6s ease-in-out infinite;
-}===============================
-= KEY FILES (FULL CONTENTS)   =
-==================================== BEGIN tailwind.config.js =====
+Note: .env* は安全のため除外します（必要ならあとで追記）。
+===========================
+= KEY FILES (FULL)   =
+===========================
+===== BEGIN tailwind.config.js =====
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -244,7 +199,10 @@ body {
     0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
     0 0 var(--glow-blur,12px) var(--glow-color, rgba(56,189,248,.9));
   animation: ring-glow 1.6s ease-in-out infinite;
-}
+}  
+/* qty badge (ProductCard) */
+.qty-badge{min-width:22px;height:22px;line-height:22px;text-align:center;border-radius:9999px;border:1px solid var(--border);background:var(--badge-bg);color:var(--badge-text);box-shadow:var(--shadow-sm)}
+.qty-badge[data-qty]:not([data-qty="0"]){ background: var(--qty-bg, rgba(34,197,94,.20)); }
 ===== END styles\globals.css =====
 
 ===== BEGIN lib\theme.ts =====
@@ -651,8 +609,8 @@ type CartItem = { product: Product; qty: number };
 
 type CartPanelProps = {
   items: CartItem[];
-  onInc: (e: React.MouseEvent, id: string) => void;
-  onDec: (e: React.MouseEvent, id: string) => void;
+  onInc: (id: string) => void;
+  onDec: (id: string) => void;
   onConfirm: () => void;
   selectedPay: string;
   onChangePay: (id: string) => void;
@@ -740,9 +698,15 @@ export default function CartPanel({
       </div>
 
       {/* カート一覧 */}
-      <div className="ios-section flex-1 overflow-auto">
-        {items.length === 0 ? (
-          <div className="p-3" style={{ color: "var(--text-muted)", fontSize: 12 }}>まだ商品がありません</div>
+      <div className="ios-section flex-1 overflow-auto flex flex-col">
+  <div className="flex-1 overflow-auto">
+{items.length === 0 ? (
+          <div className="p-3" style={{ color: "var(--text-muted)", fontSize: 12 }}>まだ商品がありません
+  </div>
+  <div className="ios-sep px-3 py-2">
+    <SlideToConfirm onConfirm={onConfirm} />
+  </div>
+</div>
         ) : (
           <ul>
             {items.map((it, idx) => (
@@ -752,7 +716,7 @@ export default function CartPanel({
                 </div>
                 <button
                   type="button"
-                  onClick={(e) => onDec(e, it.product.id)}
+                  onClick={() => onDec(it.product.id)}
                   className="btn-round-sm"
                   aria-label={it.product.name + " を1つ減らす"}
                   style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
@@ -760,7 +724,7 @@ export default function CartPanel({
                 <div className="text-center" style={{ width: LAYOUT.cartQtyWidthPx, fontSize: LAYOUT.cartQtyFontPx }}>{it.qty}</div>
                 <button
                   type="button"
-                  onClick={(e) => onInc(e, it.product.id)}
+                  onClick={() => onInc(it.product.id)}
                   className="btn-round-sm"
                   aria-label={it.product.name + " を1つ増やす"}
                   style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
@@ -772,10 +736,14 @@ export default function CartPanel({
       </div>
 
       {/* 合計 & スライド決済 */}
-      <div className="ios-section px-3 py-2 flex items-center justify-between">
-        <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>¥{total.toLocaleString()}</span>
-        <SlideToConfirm onConfirm={onConfirm} />
-      </div>
+      /* 合計 & スライド決済（分離） */
+<div className="ios-section px-3 py-2 flex items-center justify-between">
+  <span className="text-sm" style={{ fontSize: LAYOUT.totalsLabelPx, color: 'var(--text-muted)' }}>合計</span>
+  <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>¥{total.toLocaleString()}</span>
+</div>
+<div className="ios-section px-3 py-2">
+  <SlideToConfirm onConfirm={onConfirm} />
+</div>
     </div>
   );
 }
@@ -882,6 +850,272 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
 
 ===== END components\ProductCard.tsx =====
 
+===== BEGIN components\SlideToConfirm.tsx =====
+import React, { useRef, useState, useEffect } from "react";
+import { LAYOUT } from "../lib/layout";
+
+type SlideToConfirmProps = {
+  onConfirm: () => void;
+  disabled?: boolean;
+  label?: string;
+  className?: string;
+};
+
+export default function SlideToConfirm({
+  onConfirm, disabled = false, label = "スライドして決済", className = "",
+}: SlideToConfirmProps) {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const knobRef = useRef<HTMLButtonElement | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [pos, setPos] = useState(0);
+  const [pointerId, setPointerId] = useState<number | null>(null);
+  const [trackW, setTrackW] = useState(0);
+
+  const knobPx   = LAYOUT.slideKnobPx;
+  const confirmAt= LAYOUT.slideConfirmAt;
+  const insetL   = LAYOUT.slideInsetStartPx;
+  const insetR   = LAYOUT.slideInsetEndPx;
+
+  const maxRange = Math.max(0, trackW - knobPx - insetL - insetR);
+
+  useEffect(() => {
+    const updateW = () => setTrackW(trackRef.current?.clientWidth || 0);
+    updateW(); window.addEventListener("resize", updateW); return () => window.removeEventListener("resize", updateW);
+  }, []);
+
+  const clamp = (v:number,min:number,max:number)=>Math.max(min,Math.min(max,v));
+  const updateByClientX = (clientX:number) => {
+    if (!trackRef.current) return;
+    const rect = trackRef.current.getBoundingClientRect();
+    const rel = clamp(clientX - (rect.left + insetL), 0, maxRange);
+    setPos(rel / (maxRange || 1));
+  };
+
+  useEffect(() => {
+    const onPointerMove = (e: PointerEvent) => { if (!dragging) return; e.preventDefault(); e.stopPropagation(); updateByClientX(e.clientX); };
+    const onPointerUp   = (e: PointerEvent) => {
+      if (!dragging) return; e.preventDefault(); e.stopPropagation();
+      if (pointerId !== null && knobRef.current?.hasPointerCapture(pointerId)) { knobRef.current.releasePointerCapture(pointerId); }
+      setDragging(false);
+      if (pos >= confirmAt && !disabled) { setPos(1); onConfirm(); } else { setPos(0); }
+    };
+    window.addEventListener("pointermove", onPointerMove, { passive: false });
+    window.addEventListener("pointerup", onPointerUp, { passive: false });
+    return () => { window.removeEventListener("pointermove", onPointerMove); window.removeEventListener("pointerup", onPointerUp); };
+  }, [dragging, pos, disabled, onConfirm, pointerId, maxRange]);
+
+  const startDrag = (e: React.PointerEvent) => {
+    e.preventDefault(); e.stopPropagation();
+    setDragging(true); setPointerId(e.pointerId);
+    knobRef.current?.setPointerCapture(e.pointerId);
+    updateByClientX(e.clientX);
+  };
+
+  const knobLeftPx = insetL + pos * maxRange;
+  const fillW = Math.max(knobLeftPx + knobPx, knobPx);
+
+  return (
+    <div className={"w-full select-none " + (disabled ? "opacity-50 pointer-events-none " : "") + (className || "")}>
+      <div
+        ref={trackRef}
+        className="relative h-11 w-full rounded-full overflow-hidden"
+        aria-label={label}
+        style={{
+          background: "linear-gradient(to bottom, var(--surface), var(--surface-elev))",
+          border: "1px solid var(--border)",
+          boxShadow: "var(--shadow-sm)"
+        }}
+      >
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ color: "var(--text-muted)", fontSize: LAYOUT.slideLabelPx }}>
+          {label}
+        </div>
+
+        <div className="absolute top-0 left-0 h-full" style={{ width: fillW, background: "var(--slider-fill)" }} />
+
+        <button
+          ref={knobRef}
+          type="button"
+          className="absolute top-1/2 -translate-y-1/2 ui-tap ui-focus"
+          style={{
+            width: knobPx, height: knobPx, left: knobLeftPx, borderRadius: "9999px",
+            background: "linear-gradient(to bottom, var(--knob-start), var(--knob-end))",
+            border: "1px solid var(--border)",
+            boxShadow: "var(--shadow-sm)"
+          }}
+          onPointerDown={startDrag}
+          aria-label={label}
+        />
+      </div>
+    </div>
+  );
+}
+
+===== END components\SlideToConfirm.tsx =====
+
+===== BEGIN components\SlideToPay.tsx =====
+"use client";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+
+export type SlideToPayProps = {
+  onConfirm: () => void | Promise<void>;
+  disabled?: boolean;
+  thresholdPct?: number;    // 既定 90
+  heightPx?: number;        // 既定 44
+  knobPx?: number;          // 既定 32
+  label?: string;           // トラック内の案内文
+  confirmLabel?: string;    // しきい値到達時の案内文
+  className?: string;       // 追加のクラス
+  style?: React.CSSProperties;
+  resetAfterConfirm?: boolean; // 既定 true（発火後に0%へ戻す）
+};
+
+export const SlideToPay: React.FC<SlideToPayProps> = ({
+  onConfirm,
+  disabled = false,
+  thresholdPct = 90,
+  heightPx = 44,
+  knobPx = 32,
+  label = "スライドして決済",
+  confirmLabel = "離して確定",
+  className = "",
+  style,
+  resetAfterConfirm = true,
+}) => {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [trackW, setTrackW] = useState(0);
+  const [pct, setPct] = useState(0);           // 0..100
+  const pctRef = useRef(0);
+  const dragging = useRef(false);
+
+  const updatePct = (p: number) => { const v = Math.max(0, Math.min(100, p)); pctRef.current = v; setPct(v); };
+
+  // トラック幅を監視（ノブ位置/塗り幅の算出に使用）
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setTrackW(el.clientWidth));
+    setTrackW(el.clientWidth);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const effectiveWidth = Math.max(0, trackW - knobPx);     // ノブがはみ出さない可動域
+  const knobLeftPx = Math.round((pct / 100) * effectiveWidth);
+  const fillWidthPx = Math.max(0, knobLeftPx + knobPx);
+
+  const toPctFromClientX = (clientX: number) => {
+    const el = trackRef.current;
+    if (!el) return pctRef.current;
+    const rect = el.getBoundingClientRect();
+    const x = clientX - rect.left - knobPx / 2;            // ノブ中心基準
+    const ratio = x / Math.max(1, rect.width - knobPx);
+    return Math.max(0, Math.min(1, ratio)) * 100;
+  };
+
+  const endDrag = useCallback(async () => {
+    if (!dragging.current) return;
+    dragging.current = false;
+    const finalPct = pctRef.current;
+    if (finalPct >= thresholdPct && !disabled) {
+      updatePct(100);
+      try { await onConfirm(); } finally {
+        if (resetAfterConfirm) updatePct(0);
+      }
+    } else {
+      // しきい値未満は戻す
+      updatePct(0);
+    }
+  }, [onConfirm, thresholdPct, disabled, resetAfterConfirm]);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (disabled) return;
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    dragging.current = true;
+    updatePct(toPctFromClientX(e.clientX));
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging.current || disabled) return;
+    updatePct(toPctFromClientX(e.clientX));
+  };
+  const onPointerUp = () => endDrag();
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (disabled) return;
+    if (e.key === "ArrowRight") { e.preventDefault(); updatePct(pctRef.current + 5); }
+    if (e.key === "ArrowLeft")  { e.preventDefault(); updatePct(pctRef.current - 5); }
+    if (e.key === "Home")       { e.preventDefault(); updatePct(0); }
+    if (e.key === "End")        { e.preventDefault(); updatePct(100); }
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (pctRef.current >= thresholdPct) { endDrag(); } else { updatePct(thresholdPct); }
+    }
+  };
+
+  const reached = pct >= thresholdPct;
+  const ariaNow = Math.round(pct);
+
+  return (
+    <div
+      ref={trackRef}
+      className={
+        "relative rounded-full select-none shadow-sm ios-section " +
+        (disabled ? "opacity-60 pointer-events-none " : "ui-focus cursor-pointer ") +
+        className
+      }
+      style={{
+        height: heightPx,
+        background: "var(--slider-track)",
+        ...style,
+      }}
+      role="slider"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={ariaNow}
+      aria-disabled={disabled || undefined}
+      tabIndex={disabled ? -1 : 0}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onKeyDown={onKeyDown}
+    >
+      {/* 塗り（進捗） */}
+      <div
+        className="absolute left-0 top-0 h-full rounded-full"
+        style={{
+          width: fillWidthPx,
+          background: "var(--slider-fill)",
+          transition: dragging.current ? "none" : "width .15s ease",
+        }}
+      />
+      {/* ノブ */}
+      <div
+        className={"absolute top-1/2 rounded-full border " + (reached ? "glow-ring border-2" : "")}
+        style={{
+          left: knobLeftPx,
+          width: knobPx,
+          height: knobPx,
+          transform: "translateY(-50%)",
+          background: "linear-gradient(180deg, var(--knob-start), var(--knob-end))",
+          borderColor: "var(--border)",
+          boxShadow: "var(--shadow-sm)",
+          transition: dragging.current ? "none" : "left .15s ease",
+          // 発光の色（既定は --accent。paymentGlow を使う場合は外から --glow-color を上書き可能）
+          ["--glow-color" as any]: "var(--accent)",
+        }}
+      />
+      {/* ラベル */}
+      <div className="absolute inset-0 grid place-items-center pointer-events-none">
+        <span className="text-[13px] text-[color:var(--chip-text)]">
+          {reached ? confirmLabel : label}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+export default SlideToPay;
+===== END components\SlideToPay.tsx =====
+
 ===== BEGIN pages\index.tsx =====
 import React, { useMemo, useState } from "react";
 import ProductCard from "../components/ProductCard";
@@ -889,8 +1123,6 @@ import CartPanel from "../components/CartPanel";
 import { LAYOUT } from "../lib/layout";
 import { categories, products, type Product as ProductType } from "../data/catalog";
 import { GLOW_THEME } from "../lib/theme";
-import { qtyActiveVars } from "../lib/theme";
-
 type Item = { product: ProductType; qty: number };
 const isUrl = (s?: string) => !!s && /^(https?:)?\/\//.test(s);
 
@@ -910,7 +1142,10 @@ export default function HomePage() {
   };
   const onInc = (id: string) => setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: it.qty + 1 } : it)));
   const onDec = (id: string) =>
-    setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: Math.max(0, it.qty - 1) } : it))).filter((it) => it.qty > 0);
+  setItems((prev) => {
+    const next = prev.map((it) => (it.product.id === id ? { ...it, qty: Math.max(0, it.qty - 1) } : it));
+return next.filter((it) => it.qty > 0);
+  });
   const onConfirm = () => { alert("決済確定（" + selectedPay + "）"); setItems([]); };
   const getQty = (id: string) => items.find((it) => it.product.id === id)?.qty ?? 0;
 
@@ -996,3 +1231,4 @@ export default function HomePage() {
 
 ===== END pages\index.tsx =====
 
+RESULT: OK - ALL_IN_ONE regenerated

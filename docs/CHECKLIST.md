@@ -1,0 +1,11 @@
+# Handoff Quick Checklist
+- [ ] `npm run dev` で http://localhost:3000 が起動する
+- [ ] 右カラム下部に「合計」が出ている（カート末尾）
+- [ ] スライダーは最下段の独立ブロック（Cart 内に埋め込まれていない）
+- [ ] iPad Safari でノブが端まで動き、指を離して確定できる（下方向へ逃げない）
+- [ ] 商品追加で中央の数量バッジ背景が **0以外で** 緑系に変化（`--qty-bg`）
+- [ ] `SlideToConfirm.tsx` は未使用（参照なし）
+- [ ] `twglow` プラグインが有効（Tailwind ビルドでエラーなし）
+- [ ] Tailwind 実行バージョン: `npx tailwindcss -v` で確認（v3/v4どちらでも動作設計）
+- [ ] twglow 有効確認: `tailwind.config.js` に 'twglow' が含まれる / 画面に `.glow-ring` `.glow-box` が反映されること
+- [ ]Tailwind version: `npx tailwindcss --version`（v3/v4どちらでも動作設計。`-v` は入力ファイル扱いされるため非推奨）

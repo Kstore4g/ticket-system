@@ -29,18 +29,21 @@ export type DataSet = {
 
 /** ひな型データ（ここを書き換えれば UI に即反映） */
 export const categories: Category[] = [
-  { id: "set",    name: "セット",  icon: "🍔" },
-  { id: "single", name: "単品",    icon: "🍟" },
+  { id: "Burger", name: "バーガー",    icon: "🍔" },
+  { id: "RiceBurger", name: "ライスバーガー",    icon: "🍔" },
   { id: "drink",  name: "ドリンク", icon: "🥤" },
+  { id: "side",    name: "サイド",  icon: "🍟" },
 ];
 
 export const products: Product[] = [
   { id: "1", categoryId: "set",    name: "Aセット",   price: 1500, cost: 200, allergy: ["小麦","乳"] },
   { id: "2", categoryId: "set",    name: "Bセット", price: 1600, cost: 250, allergy: ["小麦","乳"] },
-  { id: "3", categoryId: "single", name: "ポテト",         price: 300, cost: 80  },
+  { id: "3", categoryId: "side", name: "ポテト",         price: 300, cost: 80  },
   { id: "4", categoryId: "drink",  name: "ドリンク",       price: 200, cost: 50  },
-  { id: "5", categoryId: "single", name: "ハンバーガー",         price: 300, cost: 80  },
-  { id: "6", categoryId: "single",  name: "チーズバーガー",       price: 200, cost: 50  },
+  { id: "5", categoryId: "Burger", name: "ハンバーガー",         price: 300, cost: 80 , allergy: ["小麦","乳"] },
+  { id: "6", categoryId: "Burger",  name: "チーズバーガー",       price: 200, cost: 50 , allergy: ["小麦","乳"]},
+  { id: "7", categoryId: "RiceBurger", name: "ライスバーガー",         price: 300, cost: 80 , allergy: ["小麦","乳"] },
+  { id: "8", categoryId: "RiceBurger",  name: "ライスチーズバーガー",       price: 200, cost: 50 , allergy: ["小麦","乳"]},
 ];
 
 /** 補助関数 */

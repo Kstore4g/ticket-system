@@ -1,122 +1,56 @@
-import React, { useEffect, useRef, useState } from "react";
-
-type Product = { id: number; name: string; price: number };
-type CartItem = { product: Product; qty: number };
-
-type Props = {
-  items: CartItem[];
-  onInc: (id: number) => void;
-  onDec: (id: number) => void;
-  onConfirm: () => void;
-  getIcon?: (id: number) => string; // ← 商品IDからカテゴリアイコンを取得
-};
-
-export default function CartPanel({ items, onInc, onDec, onConfirm, getIcon }: Props) {
-  const total = items.reduce((s, it) => s + it.product.price * it.qty, 0);
-
-  // --- slide to pay ---
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [dragging, setDragging] = useState(false);
-  const [pos, setPos] = useState(0); // 0..1
-
-  useEffect(() => { if (items.length === 0) setPos(0); }, [items.length]);
-
-  const onPointerDown = (e: React.PointerEvent) => {
-    if (items.length === 0) return;
-    setDragging(true);
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-  };
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!dragging) return;
-    const track = trackRef.current; if (!track) return;
-    const rect = track.getBoundingClientRect();
-    let x = e.clientX - rect.left;
-    x = Math.max(0, Math.min(x, rect.width));
-    setPos(x / rect.width);
-  };
-  const endDrag = () => {
-    if (!dragging) return;
-    setDragging(false);
-    if (pos >= 0.9) { // 90% までスライドで確定
-      setPos(1);
-      onConfirm();
-      setTimeout(() => setPos(0), 250);
-    } else {
-      setPos(0);
-    }
-  };
-
-  return (
-    <div className="rounded-2xl bg-white shadow p-3">
-      <div className="font-semibold mb-2">注文</div>
-
-      {items.length === 0 ? (
-        <p className="text-sm opacity-70">選択した商品はまだありません</p>
-      ) : (
-        <ul className="space-y-2">
-          {items.map(({ product, qty }) => (
-            <li key={product.id} className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 min-w-0">
-                {/* カテゴリアイコン（写真位置に表示） */}
-                <div className="w-7 h-7 rounded-full bg-gray-100 grid place-items-center text-lg shrink-0">
-                  <span>{getIcon?.(product.id) ?? "🛍️"}</span>
-                </div>
-                <div className="min-w-0">
-                  <div className="truncate">{product.name}</div>
-                  <div className="text-xs opacity-70">¥{product.price.toLocaleString()}</div>
-                </div>
-              </div>
-
-              {/* コンパクトな +/- */}
-              <div className="flex items-center gap-1 shrink-0">
-                <button
-                  aria-label="dec"
-                  onClick={() => onDec(product.id)}
-                  className="w-6 h-6 rounded-full bg-gray-200 grid place-items-center text-sm leading-none select-none"
-                >
-                  −
+                  <div className="btn-radio-label" style={{ fontSize: LAYOUT.paymentLabelPx }}>{m.name}</div>
                 </button>
-                <span className="w-6 text-center tabular-nums">{qty}</span>
-                <button
-                  aria-label="inc"
-                  onClick={() => onInc(product.id)}
-                  className="w-6 h-6 rounded-full bg-gray-200 grid place-items-center text-sm leading-none select-none"
-                >
-                  ＋
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <hr className="my-3" />
-
-      <div className="flex items-center justify-between mb-2">
-        <div className="font-semibold">合計</div>
-        <div>¥{total.toLocaleString()}</div>
-      </div>
-
-      {/* --- 下部：スライドして決済 --- */}
-      <div
-        ref={trackRef}
-        className={`relative h-12 rounded-xl ${items.length === 0 ? "bg-gray-200 opacity-60" : "bg-gray-100"}`}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-      >
-        <div className="absolute inset-0 grid place-items-center pointer-events-none text-sm text-gray-600">
-          {items.length === 0 ? "カートが空です" : "スライドして決済"}
-        </div>
-
-        <div
-          onPointerDown={onPointerDown}
-          className="absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black text-white grid place-items-center touch-none select-none"
-          style={{ left: `calc(${(pos * 100).toFixed(1)}% - 20px)` }}
-        >
-          ▶
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* カート一覧 */}
+      <div className="ios-section flex-1 overflow-auto">
+        {items.length === 0 ? (
+          <div className="p-3" style={{ color: "var(--text-muted)", fontSize: 12 }}>まだ商品がありません</div>
+        ) : (
+          <ul>
+            {items.map((it, idx) => (
+              <li key={it.product.id} className={"px-3 py-2 " + (idx > 0 ? "ios-sep " : "") + "flex items-center gap-2"}>
+                <div className="flex-1 min-w-0">
+                  <div className="truncate" style={{ fontSize: LAYOUT.cartItemNamePx }}>{it.product.name}</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onDec(it.product.id)}
+                  className="btn-round-sm"
+                  aria-label={it.product.name + " を1つ減らす"}
+                  style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
+                >−</button>
+                <div className="text-center" style={{ width: LAYOUT.cartQtyWidthPx, fontSize: LAYOUT.cartQtyFontPx }}>{it.qty}</div>
+                <button
+                  type="button"
+                  onClick={() => onInc(it.product.id)}
+                  className="btn-round-sm"
+                  aria-label={it.product.name + " を1つ増やす"}
+                  style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
+                >＋</button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+        {/* 合計（大ブロックの最下部） */}
+        <div className="ios-sep px-3 py-2 flex items-center justify-between">
+          <span className="text-sm" style={{ fontSize: LAYOUT.totalsLabelPx, color: 'var(--text-muted)' }}>合計</span>
+          <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>¥{total.toLocaleString()}</span>
+        </div>
+            {/* スライダー（独立ブロック） */}
+      <div className="ios-section px-3 py-3">
+        <SlideToPay onConfirm={onConfirm} />
+      </div>
+</div>
+      {/* 合計 & スライド決済 */}<div className="ios-section px-3 py-2 flex items-center justify-between">
+  <span className="text-sm" style={{ fontSize: LAYOUT.totalsLabelPx, color: 'var(--text-muted)' }}>合計</span>
+  <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>¥{total.toLocaleString()}</span>
+</div>
+</div>
   );
 }
