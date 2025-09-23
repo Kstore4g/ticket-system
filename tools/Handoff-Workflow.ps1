@@ -78,7 +78,7 @@ function Add-Todo{
 function Save-Tree{
   param([switch]$Force)
   $path = "docs/REPO-TREE-$((Get-Date).ToString('yyyyMMdd')).txt"
-  if(Test-Path $path -and -not $Force){ return $path }
+  if ((Test-Path $path) -and (-not $Force)){ return $path }
   $files = (& git ls-files) 2>$null
   if($files){ $files | Set-Content -Path $path -Encoding UTF8 }
   Write-Host "Wrote $path"
@@ -176,4 +176,5 @@ function Show-Status{
   & git status -sb | Out-Host
   Write-Host "=========================="
 }
+
 
