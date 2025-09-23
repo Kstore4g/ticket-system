@@ -1,0 +1,23 @@
+file: components/SlideToPay.tsx
+  thresholdPct?: number;    // 既定 90
+  heightPx?: number;        // 既定 44
+  knobPx?: number;          // 既定 32
+export const SlideToPay: React.FC<SlideToPayProps> = ({
+  thresholdPct = 90,
+  heightPx = 44,
+  knobPx = 32,
+  const effectiveWidth = Math.max(0, trackW - knobPx);     // ノブがはみ出さない可動域
+  const fillWidthPx = Math.max(0, knobLeftPx + knobPx);
+    const x = clientX - rect.left - knobPx / 2;            // ノブ中心基準
+    const ratio = x / Math.max(1, rect.width - knobPx);
+    if (finalPct >= thresholdPct && !disabled) {
+  }, [onConfirm, thresholdPct, disabled, resetAfterConfirm]);
+      if (pctRef.current >= thresholdPct) { endDrag(); } else { updatePct(thresholdPct); }
+  const reached = pct >= thresholdPct;
+        height: heightPx,
+      role="slider"
+          width: knobPx,
+          height: knobPx,
+
+[CartPanel.tsx]
+import { SlideToPay } from "./SlideToPay";

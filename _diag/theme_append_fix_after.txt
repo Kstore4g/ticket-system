@@ -1,0 +1,7 @@
+export const GLOW_THEME: {
+export function paymentGlow(key: string | undefined): Record<string,string> {
+  const spec = (k && GLOW_THEME.payments.byKey[k]) || GLOW_THEME.payments.default;
+export function applyCategoryGlowVars(doc?: Document) {
+  r.style.setProperty("--cat-glow-color", GLOW_THEME.category.color);
+  r.style.setProperty("--cat-glow-width", (GLOW_THEME.category.ringWidthPx ?? 2) + "px");
+  r.style.setProperty("--cat-glow-blur", (GLOW_THEME.category.blurPx ?? 12) + "px");

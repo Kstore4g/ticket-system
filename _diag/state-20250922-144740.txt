@@ -1,0 +1,113 @@
+### DIAG @ 20250922-144740
+
+## Git HEAD / branch
+branch: feat/ui-next-20250922-141134
+HEAD  : e6a7c1f93824555f0dff42217e0d4d60ac23219d
+
+### HEAD detail
+hash:e6a7c1f93824555f0dff42217e0d4d60ac23219d
+when:2025-09-22 14:34:27 +0900
+auth:IK_PC <ippei.kinoshita@gmail.com>
+subj:feat: Implement main product selection and cart functionality
+refs:HEAD -> feat/ui-next-20250922-141134
+
+### last 5 commits
+e6a7c1f (HEAD -> feat/ui-next-20250922-141134) feat: Implement main product selection and cart functionality
+1906ef6 (origin/audit/ui-glow-20250922-1323, feat/ui-next-20250922-140451, feat/ui-next-20250922-140056, feat/ui-next-20250922-1209, audit/ui-glow-20250922-1323) chore(audit): snapshot for glow ring & selection issues
+dbae40c (origin/master, origin/feat/ui-next-20250922-1209, master) 繝ｬ繧､繧｢繧ｦ繝井ｸ諡ｬ邂｡逅・64383a3 Merge: adopt 8f9794a snapshot from origin/feat/ui-tweaks
+4ac1294 (origin/adopt-8f9794a, adopt-8f9794a) Adopt snapshot of 8f9794a from origin/feat/ui-tweaks without rewriting history
+
+### working tree status
+## feat/ui-next-20250922-141134
+?? _diag/state-20250922-144740.txt
+
+### diff vs merge-base(master..HEAD) (names only)
+
+## npm versions
+ticket-system@1.0.0 C:\Users\Ipeei\ticket-system
+笏懌楳笏 tailwindcss@3.4.17
+笏披楳笏 twglow@0.0.10
+
+
+### package.json (devDependencies tailwindcss/postcss/autoprefixer)
+- tailwindcss: ^3.4.17
+- postcss: ^8.5.6
+- autoprefixer: ^10.4.21
+- twglow: ^0.0.10
+
+## FILE: tailwind.config.js
+  content: [
+  plugins: [require("twglow")]
+
+## FILE: postcss.config.js
+  plugins: {
+
+## FILE: styles/globals.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+  .ios-section {
+  .ios-round {
+  .btn-radio-icon {
+  content: "";
+.glow-ring::after {
+  content: "";
+.cat-icon{ position: relative; overflow: visible; }
+@keyframes cat-ring-glow {
+.cat-icon.cat-selected,
+.cat-icon.active,
+.cat-icon.is-active,
+.cat-icon.selected,
+.cat-icon[aria-selected="true"],
+.cat-icon[aria-pressed="true"],
+.cat-icon[data-selected="true"],
+.cat-icon[data-active="true"] {
+.cat-icon.cat-selected::after,
+.cat-icon.active::after,
+.cat-icon.is-active::after,
+.cat-icon.selected::after,
+.cat-icon[aria-selected="true"]::after,
+.cat-icon[aria-pressed="true"]::after,
+.cat-icon[data-selected="true"]::after,
+.cat-icon[data-active="true"]::after {
+  content: "";
+  animation: cat-ring-glow 1.6s ease-in-out infinite;
+
+## FILE: components/CartPanel.tsx
+    <div className="h-full flex flex-col gap-3">
+      <div className="ios-section p-2">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center flex-wrap" role="radiogroup" aria-label="支払い方法" style={{ gap: LAYOUT.paymentIconGapPx }}>
+                  className="flex flex-col items-center gap-1 ui-focus"
+                    className={"btn-radio-icon " + (active ? "border-glow-sky-400 glow-ring border-2" : "border") + " transition-shadow"}
+                    style={{ width: LAYOUT.payIconPx, height: LAYOUT.payIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
+                  <div className="btn-radio-label" style={{ fontSize: LAYOUT.paymentLabelPx }}>{m.name}</div>
+      <div className="ios-section flex-1 overflow-auto">
+          <div className="p-3" style={{ color: "var(--text-muted)", fontSize: 12 }}>まだ商品がありません</div>
+              <li key={it.product.id} className={"px-3 py-2 " + (idx>0 ? "ios-sep " : "") + "flex items-center gap-2"}>
+                <div className="flex-1 min-w-0">
+                  <div className="truncate" style={{ fontSize: LAYOUT.cartItemNamePx }}>{it.product.name}</div>
+                <div className="flex items-center" style={{ gap: 6 }}>
+                    className="btn-round-sm"
+                  <div className="text-center" style={{ width: LAYOUT.cartQtyWidthPx, fontSize: LAYOUT.cartQtyFontPx }}>{it.qty}</div>
+                    className="btn-round-sm"
+      <div className="ios-section px-3 py-2 flex items-center justify-between">
+        <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>¥{total.toLocaleString()}</span>
+
+## FILE: pages/index.tsx
+    <div className="h-screen w-screen overflow-hidden" style={{ background: "var(--bg-app)" }}>
+        className="flex h-full"
+          className={"ios-section p-2 hidden sm:block relative z-10"}
+          <div className="grid auto-rows-min place-items-center" style={{ gap: LAYOUT.categoryIconGapPx }}>
+                  className="flex flex-col items-center gap-1 ui-focus"
+                    className={"btn-radio-icon " + (active ? "btn-radio-active" : "")}
+                    style={{ width: LAYOUT.categoryIconPx, height: LAYOUT.categoryIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
+                  <div className="btn-radio-label" style={{ fontSize: LAYOUT.categoryLabelPx }}>{c.name}</div>
+        <main className="flex-1 overflow-auto relative z-0">
+          <div className="flex flex-col pr-1" style={{ gap: LAYOUT.listRowGapPx }}>
+        <aside className={"ios-section p-2 relative z-10"} style={{ width: LAYOUT.rightColWidthPx }}>
+
+## aside cat.id check
+OK: aside に cat.id 参照は見当たりません
+
+--- END ---

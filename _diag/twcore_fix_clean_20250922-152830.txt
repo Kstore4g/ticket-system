@@ -1,0 +1,8 @@
+CFG: tailwind.config.js
+  content: [
+  plugins: [require("twglow")]
+
+CSS: styles/globals.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

@@ -1,0 +1,41 @@
+### PAY-GLOW DIAG @ 20250923-132750
+
+[PATHS]
+CartPanel: components\CartPanel.tsx
+Index   : pages\index.tsx
+Theme   : lib\theme.ts
+CSS     : styles\globals.css
+Layout  : lib\layout.ts
+
+
+[INDEX selectedPay 初期値]
+selectedPay init = 'cash'
+
+
+[CARTPANEL 抜粋]
+active line : const active = m.id === selectedPay;
+className   : className={"btn-radio-icon " + (active ? "glow-ring border-2" : "border") + " transition-shadow"}
+style       : style={{ ...(active ? payVars(((m as any)?.key ?? (m as any)?.id ?? (m as any)?.name)) : {}), width: LAYOUT.payIconPx, height: LAYOUT.payIconPx, display: "flex", alignItems: "center", justifyContent: "center", background: active ? "var(--pay-bg, var(--radio-bg))" : "var(--radio-bg)", borderColor: active ? "var(--glow-color)" : undefined }}
+radiogroup  : role="radiogroup" aria-label="支払い方法" style={{ gap: LAYOUT.paymentIconGapPx }}>
+map(...)    : paymentMethods.map((m) => {
+
+
+[LAYOUT flags]
+PAY_HL   : True
+payVars  : True
+
+
+[CSS flags]
+glow-ring: True
+
+
+[CHECKS]
+- CartPanel:active定義        : OK
+- CartPanel:classはactive基準  : OK
+- CartPanel:classにglow-ring : OK
+- Layout:payVarsあり          : OK
+- CartPanel:styleにpayVars   : OK
+- Index:selectedPay初期値      : OK
+- Layout:PAY_HLあり           : OK
+- CSS:glow定義あり              : OK
+- CartPanel:payVars引数m.id   : NG

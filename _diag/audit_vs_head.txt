@@ -1,0 +1,56 @@
+### AUDIT vs HEAD @ 20250922-152201
+
+## audit branch:   origin/audit/ui-glow-20250922-1323
+audit sha :   origin/audit/ui-glow-20250922-1323
+HEAD branch: feat/ui-next-20250922-141134
+HEAD sha   : e6a7c1f93824555f0dff42217e0d4d60ac23219d
+
+## diff --name-status (audit..HEAD)
+
+### HEAD:styles/globals.css
+.cat-icon{ position: relative; overflow: visible; --glow-color: var(--cat-glow-color); --glow-blur: var(--cat-glow-blur); --glow-ring-width: var(--cat-glow-width); }
+
+### HEAD:pages/index.tsx
+        className="flex h-full"
+          className={"ios-section p-2 hidden sm:block relative z-10"}
+          <div className="grid auto-rows-min place-items-center" style={{ gap: LAYOUT.categoryIconGapPx }}>
+                  className="flex flex-col items-center gap-1 ui-focus"
+                    className={"btn-radio-icon " + (active ? "border-glow-sky-400 glow-ring border-2"  : "border border-transparent") + " transition-shadow"}
+                    style={{ width: LAYOUT.categoryIconPx, height: LAYOUT.categoryIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
+        <main className="flex-1 overflow-auto relative z-0">
+          <div className="flex flex-col pr-1" style={{ gap: LAYOUT.listRowGapPx }}>
+        <aside className={"ios-section p-2 relative z-10"} style={{ width: LAYOUT.rightColWidthPx }}>
+
+### HEAD:components/CartPanel.tsx
+    <div className="h-full flex flex-col gap-3">
+      <div className="ios-section p-2">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center flex-wrap" role="radiogroup" aria-label="支払い方法" style={{ gap: LAYOUT.paymentIconGapPx }}>
+                  className="flex flex-col items-center gap-1 ui-focus"
+                    className={"btn-radio-icon " + (active ? "border-glow-sky-400 glow-ring border-2"  : "border border-transparent") + " transition-shadow"}
+                    style={{ width: LAYOUT.payIconPx, height: LAYOUT.payIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
+      <div className="ios-section flex-1 overflow-auto">
+              <li key={it.product.id} className={"px-3 py-2 " + (idx>0 ? "ios-sep " : "") + "flex items-center gap-2"}>
+                <div className="flex-1 min-w-0">
+                <div className="flex items-center" style={{ gap: 6 }}>
+      <div className="ios-section px-3 py-2 flex items-center justify-between">
+
+### HEAD:lib/theme.ts
+ *   - 面の色/境界/影           : surface / border / shadows → .ios-section / .row-card / .btn-round-sm など
+    surface: string;          // 面の地色（--surface）: .ios-section / .row-card / 小ボタンのベース
+ *   --surface        : .ios-section / .row-card / .btn-round-sm 背景
+    ["--glow-ring-width" as any]: (spec.ringWidthPx ?? 2) + "px",
+
+### HEAD:lib/layout.ts
+
+### HEAD:tailwind.config.js
+  content: [
+  plugins: [require("twglow")]
+
+## sanity checks
+WARN: tailwind content に pages/components が不足？ -> tailwind.config.js
+WARN: styles/globals.css に @tailwind base; が見つかりません
+WARN: styles/globals.css に @tailwind components; が見つかりません
+WARN: styles/globals.css に @tailwind utilities; が見つかりません
+
+--- END ---

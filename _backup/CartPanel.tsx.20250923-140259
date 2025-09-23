@@ -16,6 +16,8 @@ type CartPanelProps = {
 };
 
 const isUrl = (s?: string) => !!s && /^https?:\/\//.test(s);
+
+// 素朴な文字グリフ（Material Icons なしでレイアウトを崩さない）
 const glyphFor = (id: string) => {
   switch(id.toLowerCase()){
     case "cash":   return "現";
@@ -42,17 +44,10 @@ export default function CartPanel({
 
   return (
     <div className="h-full flex flex-col gap-3">
-      {/* 親ブロック：選択ごとに発光＋背景カバー */}
+      {/* 親ブロック（白い四角）も選択色でふわっと発光 */}
       <div
         className={"ios-section p-2 " + (selectedPay ? "glow-box" : "")}
-        style={selectedPay ? ({
-          ...(payVars(selectedPay) as any),
-          ...(payGroupVars(selectedPay) as any),
-          backgroundImage: 'var(--group-bg-image)',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'var(--group-bg-size, cover)',
-          backgroundPosition: 'var(--group-bg-pos, center center)'
-        } as any) : undefined}
+        style={selectedPay ? ({ ...(payVars(selectedPay) as any), ...(payGroupVars(selectedPay) as any), backgroundImage: 'var(--group-bg-image)', backgroundRepeat: 'no-repeat', backgroundSize: 'var(--group-bg-size, auto 72%)', backgroundPosition: 'var(--group-bg-pos, right 12px center)' } as any) : undefined}
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center flex-wrap" role="radiogroup" aria-label="支払い方法" style={{ gap: LAYOUT.paymentIconGapPx }}>
@@ -68,9 +63,9 @@ export default function CartPanel({
                   role="radio"
                   aria-checked={active}
                 >
-                  {/* 円形アイコン：外側の発光のみ（内側の色付き枠は消す） */}
+                  {/* 円形アイコン：選択時のみ縁が発光 & 背景をうっすらティント */}
                   <div
-                    className={"btn-radio-icon " + (active ? "glow-ring border border-transparent" : "border") + " transition-shadow"}
+                    className={"btn-radio-icon " + (active ? "glow-ring border-2" : "border") + " transition-shadow"}
                     style={{
                       ...(active ? (payVars(m.id) as any) : {}),
                       width: LAYOUT.payIconPx,
@@ -79,8 +74,7 @@ export default function CartPanel({
                       alignItems: "center",
                       justifyContent: "center",
                       background: active ? "var(--pay-bg, var(--radio-bg))" : "var(--radio-bg)",
-                      // 内側枠は付けない
-                      borderColor: undefined,
+                      borderColor: active ? "var(--glow-color)" : undefined,
                     }}
                   >
                     {isUrl(m.icon)

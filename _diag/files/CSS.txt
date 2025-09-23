@@ -141,17 +141,3 @@ body {
   border-radius: 9999px; pointer-events: none;
   animation: ring-glow 1.6s ease-in-out infinite;
 }
-
-/* rectangle glow (inherit radius) */
-.glow-box{ position: relative; overflow: visible; }
-.glow-box::after{
-  content:"";
-  position:absolute;
-  inset: calc(-1 * var(--glow-ring-width,2px));
-  border-radius: inherit;
-  pointer-events:none;
-  box-shadow:
-    0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
-    0 0 var(--glow-blur,12px) var(--glow-color, rgba(56,189,248,.9));
-  animation: ring-glow 1.6s ease-in-out infinite;
-}

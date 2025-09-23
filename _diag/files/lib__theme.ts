@@ -205,13 +205,13 @@ export const GLOW_THEME: {
   category: GlowSpec;
   payments: { default: GlowSpec; byKey: Record<string, GlowSpec> };
 } = {
-  category: { color: "rgba(56,189,0,.9)", ringWidthPx: 1, blurPx: 12 }, // カテゴリ一括
+  category: { color: "rgba(56,189,248,.9)", ringWidthPx: 2, blurPx: 12 }, // カテゴリ一括
   payments: {
     default: { color: "rgba(56,189,248,.9)", ringWidthPx: 2, blurPx: 12 }, // 既定
     byKey: {
-       "cash":   { color: "rgba(245,158,11,.95)", blurPx: 16 },
-       "card":   { color: "rgba(34,197,94,.95)" },
-       "paypay": { color: "rgba(239,68,68,.95)", ringWidthPx: 3 },
+      // "cash":   { color: "rgba(245,158,11,.95)", blurPx: 16 },
+      // "card":   { color: "rgba(34,197,94,.95)" },
+      // "paypay": { color: "rgba(239,68,68,.95)", ringWidthPx: 3 },
     }
   }
 };
@@ -240,6 +240,3 @@ export function applyCategoryGlowVars(doc?: Document) {
   r.style.setProperty("--cat-glow-width", (GLOW_THEME.category.ringWidthPx ?? 2) + "px");
   r.style.setProperty("--cat-glow-blur", (GLOW_THEME.category.blurPx ?? 12) + "px");
 }
-export const QTY_THEME = { activeBg: 'rgba(34,197,94,.16)' };
-export const qtyVars = (active?: boolean) => active ? ({ ['--qty-bg' as any]: QTY_THEME.activeBg } as any) : ({} as any);
-export const qtyActiveVars = () => ({ ['--qty-bg' as any]: QTY_THEME.activeBg } as any);

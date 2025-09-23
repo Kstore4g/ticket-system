@@ -1,0 +1,9 @@
+CSS: styles/globals.css
+
+[index/cart 抜粋]
+
+-- pages/index.tsx
+                    className={"btn-radio-icon " + (active ? "border-glow-sky-400 glow-ring border-2"  : "border border-transparent") + " transition-shadow"}
+
+-- components/CartPanel.tsx
+                    className={"btn-radio-icon " + (active ? "border-glow-sky-400 glow-ring border-2"  : "border border-transparent") + " transition-shadow"}

@@ -1,6 +1,7 @@
 import React from "react";
 import { type Product } from "../data/catalog";
 import { LAYOUT } from "../lib/layout";
+import { QTY_THEME, qtyActiveVars } from "../lib/theme";
 import { qtyActiveVars } from "../lib/theme";
 
 type ProductCardProps = {
@@ -74,6 +75,7 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
           <div 
             className="flex items-center justify-center qty-badge"
             style={{ ...qtyActiveVars(), 
+              background: "var(--badge-bg)",
               color: "var(--badge-text)",
               minWidth: LAYOUT.qtyBadgeMinWidthPx,
               height: LAYOUT.qtyBadgeHeightPx,

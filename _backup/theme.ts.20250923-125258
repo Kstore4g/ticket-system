@@ -242,4 +242,3 @@ export function applyCategoryGlowVars(doc?: Document) {
 }
 export const QTY_THEME = { activeBg: 'rgba(34,197,94,.16)' };
 export const qtyVars = (active?: boolean) => active ? ({ ['--qty-bg' as any]: QTY_THEME.activeBg } as any) : ({} as any);
-export const qtyActiveVars = () => ({ ['--qty-bg' as any]: QTY_THEME.activeBg } as any);

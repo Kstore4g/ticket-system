@@ -1,0 +1,146 @@
+### LAYOUT DEEP DIAG @ 20250922-153242
+
+## DUMP-SAVED: tailwind.config.js -> _diag/files/tailwind.config.js
+
+## DUMP-SAVED: postcss.config.js -> _diag/files/postcss.config.js
+
+## DUMP-SAVED: styles/globals.css -> _diag/files/styles__globals.css
+
+## DUMP-SAVED: pages/index.tsx -> _diag/files/pages__index.tsx
+
+## DUMP-SAVED: components/CartPanel.tsx -> _diag/files/components__CartPanel.tsx
+
+## DUMP-SAVED: components/ProductCard.tsx -> _diag/files/components__ProductCard.tsx
+
+## DUMP-SAVED: lib/layout.ts -> _diag/files/lib__layout.ts
+
+## DUMP-SAVED: lib/theme.ts -> _diag/files/lib__theme.ts
+
+## HIGHLIGHT
+
+### FILE: tailwind.config.js
+  content: [
+  plugins: [require("twglow")]
+
+### FILE: postcss.config.js
+  plugins: {
+
+### FILE: styles/globals.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+  --badge-bg: #ffffff;
+  --badge-text: #111827;
+.cat-icon{ position: relative; overflow: visible; --glow-color: var(--cat-glow-color); --glow-blur: var(--cat-glow-blur); --glow-ring-width: var(--cat-glow-width); }
+
+### FILE: pages/index.tsx
+}type Item = { product: ProductType; qty: number };
+      if (i >= 0) { const copy = [...prev]; copy[i] = { ...copy[i], qty: copy[i].qty + 1 }; return copy; }
+      return [...prev, { product: p, qty: 1 }];
+  const onInc = (id: string) => setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: it.qty + 1 } : it)));
+    setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: Math.max(0, it.qty - 1) } : it))).filter((it) => it.qty > 0);
+  const getQty = (id: string) => items.find((it) => it.product.id === id)?.qty ?? 0;
+        className="flex h-full"
+          className={"ios-section p-2 hidden sm:block relative z-10"}
+          style={{ width: LAYOUT.leftColWidthPx }}
+          <div className="grid auto-rows-min place-items-center" style={{ gap: LAYOUT.categoryIconGapPx }}>
+                  className="flex flex-col items-center gap-1 ui-focus"
+                    className={"btn-radio-icon " + (active ? "border-glow-sky-400 glow-ring border-2"  : "border border-transparent") + " transition-shadow"}
+                    style={{ width: LAYOUT.categoryIconPx, height: LAYOUT.categoryIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
+        <main className="flex-1 overflow-auto relative z-0">
+          <div className="flex flex-col pr-1" style={{ gap: LAYOUT.listRowGapPx }}>
+              <ProductCard key={p.id} product={p} qty={getQty(p.id)} onAdd={onAdd} />
+        <aside className={"ios-section p-2 relative z-10"} style={{ width: LAYOUT.rightColWidthPx }}>
+
+### FILE: components/CartPanel.tsx
+type CartItem = { product: Product; qty: number };
+  const total = items.reduce((s, it) => s + it.product.price * it.qty, 0);
+      <div className="ios-section p-2">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center flex-wrap" role="radiogroup" aria-label="支払い方法" style={{ gap: LAYOUT.paymentIconGapPx }}>
+                  className="flex flex-col items-center gap-1 ui-focus"
+                    className={"btn-radio-icon " + (active ? "border-glow-sky-400 glow-ring border-2"  : "border border-transparent") + " transition-shadow"}
+                    style={{ width: LAYOUT.payIconPx, height: LAYOUT.payIconPx, display: "flex", alignItems: "center", justifyContent: "center" }}
+      <div className="ios-section flex-1 overflow-auto">
+                <div className="flex-1 min-w-0">
+                <div className="flex items-center" style={{ gap: 6 }}>
+                  <div className="text-center" style={{ width: LAYOUT.cartQtyWidthPx, fontSize: LAYOUT.cartQtyFontPx }}>{it.qty}</div>
+      <div className="ios-section px-3 py-2 flex items-center justify-between">
+
+### FILE: components/ProductCard.tsx
+  qty?: number;
+export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProps) {
+      className="row-card ui-tap ui-focus" style={{ position: "relative" }}
+      <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-0">
+              className="flex flex-wrap gap-1 mt-1"
+        <div className="shrink-0" style={{ position: "absolute", top: LAYOUT.qtyBadgeOffsetTopPx, right: LAYOUT.qtyBadgeOffsetRightPx, zIndex: LAYOUT.qtyBadgeZIndex, pointerEvents: "none" }}>
+            className="flex items-center justify-center"
+              background: "var(--badge-bg)",
+              color: "var(--badge-text)",
+              minWidth: LAYOUT.qtyBadgeMinWidthPx,
+              height: LAYOUT.qtyBadgeHeightPx,
+              paddingInline: LAYOUT.qtyBadgePaddingInlinePx,
+              fontSize: LAYOUT.qtyTextPx,
+              borderTopLeftRadius: LAYOUT.qtyBadgeRadiusTopLeftPx,
+              borderTopRightRadius: LAYOUT.qtyBadgeRadiusTopRightPx,
+              borderBottomRightRadius: LAYOUT.qtyBadgeRadiusBottomRightPx,
+              borderBottomLeftRadius: LAYOUT.qtyBadgeRadiusBottomLeftPx,
+            {qty}
+
+### FILE: lib/layout.ts
+  leftColWidthPx:   80,      // 左カラム（カテゴリ）
+  rightColWidthPx:  300,     // 右カラム（注文）
+  categoryIconPx:           60, // 丸アイコン直径
+  listRowGapPx:        1,    // 1行ごとの間隔
+  qtyBadgeMinWidthPx: 60,
+  qtyBadgeHeightPx:  118,
+  qtyTextPx:          30,
+  qtyBadgeOffsetTopPx: -1,   // components/ProductCard.tsx - overlap upwards (px, negative to go outside top)
+  qtyBadgeOffsetRightPx: 0, // components/ProductCard.tsx - overlap to the right (px, negative to go outside right)
+  qtyBadgeZIndex: 2,         // components/ProductCard.tsx - stacking above the card surfaceqtyBadgePaddingInlinePx: 0,  // components/ProductCard.tsx - qty badge horizontal padding (0 = no inner padding)
+  qtyBadgeOverflowRightPx: 0,  // components/ProductCard.tsx - push qty badge to overflow right (px, 0 = disabled)// ⬇ 追加：数量バッジの四隅角丸（px）— 個別に調整可能（既定は 9999 でピル形）
+  qtyBadgeRadiusTopLeftPx:     0, // components/ProductCard.tsx …… 数量バッジの左上角
+  qtyBadgeRadiusTopRightPx:    15, // 右上角
+  qtyBadgeRadiusBottomRightPx: 15, // 右下角
+  qtyBadgeRadiusBottomLeftPx:  0, // 左下角
+  cartQtyWidthPx:   22,      // ±の間の数量表示の幅
+  cartQtyFontPx:    21,      // ±の間の数量文字サイズ
+
+### FILE: lib/theme.ts
+ *   - 面の色/境界/影           : surface / border / shadows → .ios-section / .row-card / .btn-round-sm など
+ *   - ラジオ風丸（カテゴリ/決済）: radioBg / radioActive → .btn-radio-icon / .btn-radio-active
+ *   - 個数バッジ               : badgeBg / badgeText → ProductCard の数量表示
+    surface: string;          // 面の地色（--surface）: .ios-section / .row-card / 小ボタンのベース
+    badgeBg: string;      // 数量バッジ背景（--badge-bg）
+    badgeText?: string;   // 数量バッジ文字（--badge-text）
+    badgeBg: "#ffffff",          // 数量バッジ
+    badgeText: "#111827",
+    badgeBg: "#1b1c1f",
+ *   --surface        : .ios-section / .row-card / .btn-round-sm 背景
+ *   --radio-bg       : .btn-radio-icon の内側
+ *   --accent         : .btn-radio-active のリング、.ui-focus の focus-outline
+ *   --badge-bg/…     : 数量バッジ（ProductCard）
+  r.setProperty("--badge-bg", c.badgeBg);
+  if (c.badgeText) r.setProperty("--badge-text", c.badgeText);
+    // btn-radio-icon で --glow-* にもフォールバック
+    ["--glow-ring-width" as any]: (spec.ringWidthPx ?? 2) + "px",
+
+## LAYOUT NUMBERS (heuristic parse)
+- leftColWidthPx: 80
+- rightColWidthPx: 300
+- categoryIconPx: 60
+- listRowGapPx: 1
+- cartQtyWidthPx: 22
+- cartQtyFontPx: 21
+
+## 3-COLUMN STRUCTURE CHECK
+- outer flex? YES
+- left aside width style? YES
+- right aside width style? YES
+- category grid present? YES
+- product row uses row-card? NO
+
+## DIFF vs   origin/audit/ui-glow-20250922-1323 (names only / key files)
+
+--- END ---

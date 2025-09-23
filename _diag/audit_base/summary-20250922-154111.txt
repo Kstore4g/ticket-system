@@ -1,0 +1,17 @@
+### AUDIT BASELINE DUMP @ 20250922-154111
+audit: origin/audit/ui-glow-20250922-1323
+OK  : tailwind.config.js -> _diag/audit_base/tailwind.config.js
+MISS: tailwind.config.ts (not in audit)
+OK  : postcss.config.js -> _diag/audit_base/postcss.config.js
+OK  : styles/globals.css -> _diag/audit_base/styles__globals.css
+MISS: src/styles/globals.css (not in audit)
+OK  : pages/index.tsx -> _diag/audit_base/pages__index.tsx
+MISS: src/pages/index.tsx (not in audit)
+OK  : components/CartPanel.tsx -> _diag/audit_base/components__CartPanel.tsx
+MISS: src/components/CartPanel.tsx (not in audit)
+OK  : components/ProductCard.tsx -> _diag/audit_base/components__ProductCard.tsx
+MISS: src/components/ProductCard.tsx (not in audit)
+OK  : lib/layout.ts -> _diag/audit_base/lib__layout.ts
+MISS: src/lib/layout.ts (not in audit)
+OK  : lib/theme.ts -> _diag/audit_base/lib__theme.ts
+MISS: src/lib/theme.ts (not in audit)

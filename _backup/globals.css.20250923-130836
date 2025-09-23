@@ -129,29 +129,3 @@ body {
 /* qty badge (product card) */
 .qty-badge{min-width:22px;height:22px;line-height:22px;text-align:center;border-radius:9999px;border:1px solid var(--border);background:var(--badge-bg);color:var(--badge-text);box-shadow:var(--shadow-sm)}
 .qty-badge[data-qty]:not([data-qty="0"]){ background: var(--qty-bg, rgba(34,197,94,.20)); }
-
-@keyframes ring-glow {
-  0%,100% { box-shadow: 0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
-                      0 0 10px var(--glow-color, rgba(56,189,248,.9)); }
-  50%     { box-shadow: 0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
-                      0 0 var(--glow-blur,16px) var(--glow-color, rgba(56,189,248,.9)); }
-}
-.glow-ring::after {
-  content: ""; position: absolute; inset: calc(-1 * var(--glow-ring-width,2px));
-  border-radius: 9999px; pointer-events: none;
-  animation: ring-glow 1.6s ease-in-out infinite;
-}
-
-/* rectangle glow (inherit radius) */
-.glow-box{ position: relative; overflow: visible; }
-.glow-box::after{
-  content:"";
-  position:absolute;
-  inset: calc(-1 * var(--glow-ring-width,2px));
-  border-radius: inherit;
-  pointer-events:none;
-  box-shadow:
-    0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
-    0 0 var(--glow-blur,12px) var(--glow-color, rgba(56,189,248,.9));
-  animation: ring-glow 1.6s ease-in-out infinite;
-}
