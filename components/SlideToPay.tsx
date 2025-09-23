@@ -73,13 +73,13 @@ export const SlideToPay: React.FC<SlideToPayProps> = ({
   }, [onConfirm, thresholdPct, disabled, resetAfterConfirm]);
 
   const onPointerDown = (e: React.PointerEvent) => {
-    if (disabled) return;
+   e.preventDefault();  e.preventDefault(); if (disabled) return;
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
     dragging.current = true;
     updatePct(toPctFromClientX(e.clientX));
   };
   const onPointerMove = (e: React.PointerEvent) => {
-    if (!dragging.current || disabled) return;
+    e.preventDefault(); if (!dragging.current || disabled) return;
     updatePct(toPctFromClientX(e.clientX));
   };
   const onPointerUp = () => endDrag();
@@ -110,6 +110,7 @@ export const SlideToPay: React.FC<SlideToPayProps> = ({
       style={{
         height: heightPx,
         background: "var(--slider-track)",
+        touchAction: "none",
         ...style,
       }}
       role="slider"
@@ -121,6 +122,7 @@ export const SlideToPay: React.FC<SlideToPayProps> = ({
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
       onKeyDown={onKeyDown}
     >
       {/* 塗り（進捗） */}

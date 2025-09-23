@@ -23,7 +23,10 @@ export default function HomePage() {
   };
   const onInc = (id: string) => setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: it.qty + 1 } : it)));
   const onDec = (id: string) =>
-    setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: Math.max(0, it.qty - 1) } : it))).filter((it) => it.qty > 0);
+  setItems((prev) => {
+    const next = prev.map((it) => (it.product.id === id ? { ...it, qty: Math.max(0, it.qty - 1) } : it));
+return next.filter((it) => it.qty > 0);
+  });
   const onConfirm = () => { alert("決済確定（" + selectedPay + "）"); setItems([]); };
   const getQty = (id: string) => items.find((it) => it.product.id === id)?.qty ?? 0;
 

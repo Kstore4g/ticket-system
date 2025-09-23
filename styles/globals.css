@@ -157,4 +157,7 @@ body {
     0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
     0 0 var(--glow-blur,12px) var(--glow-color, rgba(56,189,248,.9));
   animation: ring-glow 1.6s ease-in-out infinite;
-}
+}  
+/* qty badge (ProductCard) */
+.qty-badge{min-width:22px;height:22px;line-height:22px;text-align:center;border-radius:9999px;border:1px solid var(--border);background:var(--badge-bg);color:var(--badge-text);box-shadow:var(--shadow-sm)}
+.qty-badge[data-qty]:not([data-qty="0"]){ background: var(--qty-bg, rgba(34,197,94,.20)); }
