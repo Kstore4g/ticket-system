@@ -1,7 +1,7 @@
 ==============================
 = HANDOFF: ALL IN ONE (TXT) =
 ==============================
-Generated : 2025-09-23 14:23:37 +09:00
+Generated : 2025-09-23 14:30:32 +09:00
 Output    : _diag\ALL_IN_ONE.txt
 
 [Env]
@@ -10,8 +10,8 @@ NPM  : 10.9.3
 OS   : Windows_NT (PowerShell 7.5.3)
 
 [Git]
-Branch      : feat/ui-next-20250922-141134
-Last Commit : 3f58ff3 2025-09-23 14:06:01 +0900 IK_PC 繝ｬ繧､繧｢繧ｦ繝医逋ｺ蜈臥ｵゆｺ
+Branch      : hotfix/glow-qty-20250923
+Last Commit : 036628b 2025-09-23 14:25:13 +0900 IK_PC fix: normalize glow CSS & restore qty badge block; regen ALL_IN_ONE
 
 Note: .env* は安全のため除外します（必要ならあとで追記）。=====================
 = SPOT_READ (8番)   =
@@ -19,20 +19,48 @@ Note: .env* は安全のため除外します（必要ならあとで追記）�
 == tailwind.config.js ==
   content: [
   plugins: [require("twglow")]
-== styles/globals.css (glow) ==
+
+== styles/globals.css (glow block) ==
+/* === glow ring (category/payments) === */
 .glow-ring{ position:relative; z-index:0; }
 .glow-ring::after{
+  content:"";
+  position:absolute;
   inset: calc(-1 * var(--glow-ring-width,2px));
+  border-radius:9999px;
+  pointer-events:none;
+  z-index:1;
+  box-shadow:
     0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)),
+    0 0 var(--glow-blur,12px) var(--glow-color,rgba(56,189,248,.9));
+  animation:ring-glow 1.6s ease-in-out infinite;
+}
 @keyframes ring-glow{
+  0%,100%{
+    box-shadow:
       0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)),
+      0 0 calc(var(--glow-blur,12px)*0.85) var(--glow-color,rgba(56,189,248,.9));
+  }
+  50%{
+    box-shadow:
       0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)),
+      0 0 calc(var(--glow-blur,12px)*1.2) var(--glow-color,rgba(56,189,248,.9));
+  }
+}
+
+/* rectangle glow (inherit radius) */
 .glow-box{ position: relative; overflow: visible; }
 .glow-box::after{
+  content:"";
+  position:absolute;
   inset: calc(-1 * var(--glow-ring-width,2px));
+  border-radius: inherit;
+  pointer-events:none;
+  box-shadow:
     0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
-
-===============================
+    0 0 var(--glow-blur,12px) var(--glow-color, rgba(56,189,248,.9));
+  animation: ring-glow 1.6s ease-in-out infinite;
+}===============================
 = KEY FILES (FULL CONTENTS)   =
 ==================================== BEGIN tailwind.config.js =====
 /** @type {import('tailwindcss').Config} */
@@ -528,7 +556,7 @@ export const LAYOUT = {
   qtyBadgeRadiusBottomRightPx: 15,
   qtyBadgeRadiusBottomLeftPx: 0,
 
-/* === 支払い方法（右カラム上部） === *//* === 支払い方法（右カラム上部） === */
+/* === 支払い方法（右カラム上部） === */
   payIconPx:           45,   // 丸アイコン直径
   paymentIconGapPx:     7,   // アイコン間隔
   paymentLabelPx:      12,   // ラベル文字サイズ
