@@ -73,7 +73,7 @@ export const SlideToPay: React.FC<SlideToPayProps> = ({
   }, [onConfirm, thresholdPct, disabled, resetAfterConfirm]);
 
   const onPointerDown = (e: React.PointerEvent) => {
-   e.preventDefault();  e.preventDefault(); if (disabled) return;
+   e.preventDefault(); if (disabled) return;
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
     dragging.current = true;
     updatePct(toPctFromClientX(e.clientX));
