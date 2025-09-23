@@ -4,6 +4,8 @@ import CartPanel from "../components/CartPanel";
 import { LAYOUT } from "../lib/layout";
 import { categories, products, type Product as ProductType } from "../data/catalog";
 import { GLOW_THEME } from "../lib/theme";
+import { qtyActiveVars } from "../lib/theme";
+
 type Item = { product: ProductType; qty: number };
 const isUrl = (s?: string) => !!s && /^(https?:)?\/\//.test(s);
 

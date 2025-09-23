@@ -1,9 +1,12 @@
+===== BEGIN pages\index.tsx =====
 import React, { useMemo, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import CartPanel from "../components/CartPanel";
 import { LAYOUT } from "../lib/layout";
 import { categories, products, type Product as ProductType } from "../data/catalog";
 import { GLOW_THEME } from "../lib/theme";
+import { qtyActiveVars } from "../lib/theme";
+
 type Item = { product: ProductType; qty: number };
 const isUrl = (s?: string) => !!s && /^(https?:)?\/\//.test(s);
 
@@ -106,3 +109,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+===== END pages\index.tsx =====

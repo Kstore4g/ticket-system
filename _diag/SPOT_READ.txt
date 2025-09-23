@@ -1,0 +1,37 @@
+== tailwind.config.js ==
+  content: [
+  plugins: [require("twglow")]
+== styles/globals.css (glow) ==
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+  .btn-radio-icon {
+.glow-ring{ position:relative; z-index:0; }
+.glow-ring::after{ content:""; position:absolute; inset:-3px; border-radius:9999px; pointer-events:none; z-index:1; box-shadow:0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)), 0 0 var(--glow-blur,12px) var(--glow-color,rgba(56,189,248,.9)); animation:ring-glow 1.6s ease-in-out infinite; }
+@keyframes ring-glow{0%,100%{ box-shadow:0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)), 0 0 calc(var(--glow-blur,12px)*0.85) var(--glow-color,rgba(56,189,248,.9)); } 50%{ box-shadow:0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)), 0 0 calc(var(--glow-blur,12px)*1.2) var(--glow-color,rgba(56,189,248,.9)); }}
+  0%,100% { box-shadow: 0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
+  50%     { box-shadow: 0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
+.glow-ring::after {
+  content: ""; position: absolute; inset: calc(-1 * var(--glow-ring-width,2px));
+.glow-box{ position: relative; overflow: visible; }
+.glow-box::after{
+  inset: calc(-1 * var(--glow-ring-width,2px));
+    0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
+== lib/layout.ts (payVars/payGroupVars/PAY_SKIN) ==
+export const payVars = (key?: string) => {
+export const PAY_SKIN: { default: PaySkinSpec; byKey: Record<string, PaySkinSpec> } = {
+export const payGroupVars = (key?: string): Record<string,string> => {
+  const spec = (k && PAY_SKIN.byKey[k]) || PAY_SKIN.default;
+== lib/theme.ts (QTY) ==
+export const QTY_THEME = { activeBg: 'rgba(34,197,94,.16)' };
+export const qtyVars = (active?: boolean) => active ? ({ ['--qty-bg' as any]: QTY_THEME.activeBg } as any) : ({} as any);
+export const qtyActiveVars = () => ({ ['--qty-bg' as any]: QTY_THEME.activeBg } as any);
+== components/CartPanel.tsx (radiogroup/glow) ==
+import { LAYOUT, payVars, payGroupVars } from "../lib/layout";
+        className={"ios-section p-2 " + (selectedPay ? "glow-box" : "")}
+          ...(payGroupVars(selectedPay) as any),
+                    className={"btn-radio-icon " + (active ? "glow-ring border border-transparent" : "border") + " transition-shadow"}
+== components/ProductCard.tsx (qty-badge) ==
+import { qtyActiveVars } from "../lib/theme";
+            className="flex items-center justify-center qty-badge"
+            style={{ ...qtyActiveVars(), 

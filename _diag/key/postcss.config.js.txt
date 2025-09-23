@@ -1,0 +1,8 @@
+===== BEGIN postcss.config.js =====
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+};
+===== END postcss.config.js =====
