@@ -88,8 +88,6 @@ export const LAYOUT = {
   slideLabelPx:       16,    // ラベル文字サイズ
 } as const;
 
-
-
 //
 // === payment highlight (tint & glow) ===
 export const PAY_HL = {
