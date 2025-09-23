@@ -9,7 +9,8 @@
     "build": "next build",
     "start": "next start",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "verify": "pwsh ./tools/Verify-Handoff.ps1"
   },
   "repository": {
     "type": "git",

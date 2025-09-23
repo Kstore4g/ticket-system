@@ -139,3 +139,28 @@ export const payGroupVars = (key?: string): Record<string,string> => {
   if (spec.groupBgPos)   out["--group-bg-pos"]   = spec.groupBgPos!;
   return out as Record<string,string>;
 };
+\n// --- handoff shim begin (safe to remove when real impl exists) ---
+export type PayVarsInput = Partial<{
+  tone: string;
+  active: boolean;
+  emphasis: number;
+  skin: string;
+}>;
+
+export function payVars(input: PayVarsInput = {}): Record<string,string> {
+  const tone = input.tone ?? "default";
+  const active = input.active ?? true;
+  const emphasis = input.emphasis ?? 0.6;
+  const skin = input.skin ?? "solid";
+  return {
+    "--pay-bg":   `var(--pay-${tone}-bg, rgba(34,197,94,${active ? 0.18 : 0.08}))`,
+    "--pay-ring": `var(--pay-${tone}-ring, rgba(34,197,94,${active ? 0.70 : 0.35}))`,
+    "--pay-emphasis": String(emphasis),
+    "--pay-skin": skin,
+  };
+}
+
+export function payGroupVars(group: string | number, input: PayVarsInput = {}): Record<string,string> {
+  return { ...payVars(input), "--pay-group-id": String(group) };
+}
+// --- handoff shim end ---
