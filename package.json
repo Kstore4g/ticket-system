@@ -10,7 +10,7 @@
     "start": "next start",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "verify": "pwsh ./tools/Verify-Handoff.ps1",
+    "verify": "pwsh ./tools/Verify-Handoff-Local.ps1",
     "work:load": "pwsh -NoLogo -NoProfile -Command \". ./tools/Handoff-Workflow.ps1; Show-Status\"",
     "work:verify": "pwsh -NoLogo -NoProfile -Command \". ./tools/Handoff-Workflow.ps1; Run-Verify\""
   },
