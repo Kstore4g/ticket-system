@@ -1,4 +1,13 @@
 {
   "root": true,
-  "ignorePatterns": ["_backup/**", "_diag/**", "docs/**", "**/*.bak", "**/*.bak.*"]
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react", "react-hooks"],
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": { "jsx": true }
+  },
+  "settings": { "react": { "version": "detect" } },
+  "ignorePatterns": ["_backup/**", "_diag/**", "docs/**", "**/*.bak", "**/*.bak.*", "components/TopBar.tsx"]
 }
