@@ -3,3 +3,4 @@ _diag/
 docs/
 **/*.bak
 **/*.bak.*
+components/TopBar.tsx

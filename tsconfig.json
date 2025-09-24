@@ -43,6 +43,7 @@
     "**/*.bak",
     "**/*.bak.*",
     ".next",
-    ".turbo"
+    ".turbo",
+    "components/TopBar.tsx"
   ]
 }
