@@ -1,0 +1,3 @@
+## hotfix/glow-qty-20250924...origin/hotfix/glow-qty-20250924
+?? docs/handoff/HANDOFF-20250924-1407-glow-qty/
+?? docs/verify/verify-20250924-141740.txt

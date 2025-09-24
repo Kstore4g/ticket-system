@@ -1,0 +1,11 @@
+# UI Contracts / Invariants
+- CSS Variables
+  - `theme.applyTheme()` が :root に `--bg-app`, `--text`, `--badge-*`, `--slider-*` を適用
+  - `qtyActiveVars()` が `--qty-bg` を供給 → `.qty-badge[data-qty]:not([data-qty="0"])` が参照
+- Layout Tokens
+  - `LAYOUT.*` を各コンポーネントが参照（文字サイズ・余白・ノブ径など）
+- Glow / Skin
+  - `globals.css` の `.glow-ring`, `.glow-box`
+  - `layout.ts` の `payVars() / payGroupVars()` が支払い選択の発光・背景スキン
+- Slider
+  - 使用：`SlideToPay.tsx`（iPad 安定化版）。旧版は残置・未使用。

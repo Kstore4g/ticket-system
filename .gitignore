@@ -12,3 +12,4 @@ docs/verify/*.log
 docs/verify/*-full.log
 docs/verify/scan-*.txt
 docs/handoff/*/scan-*.txt
+_backup/**
