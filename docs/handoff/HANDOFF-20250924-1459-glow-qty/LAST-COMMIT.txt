@@ -1,0 +1,7 @@
+commit c4be733ef7142c9c30ad1f28b02ffa1a87d14835
+Author:     IK_PC <ippei.kinoshita@gmail.com>
+AuthorDate: Wed Sep 24 14:59:01 2025 +0900
+Commit:     IK_PC <ippei.kinoshita@gmail.com>
+CommitDate: Wed Sep 24 14:59:01 2025 +0900
+
+    chore(handoff): pack session & verify logs (glow-qty)

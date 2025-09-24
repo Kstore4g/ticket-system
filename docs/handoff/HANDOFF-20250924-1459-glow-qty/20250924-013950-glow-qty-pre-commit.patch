@@ -1,0 +1,61 @@
+diff --git a/docs/REPO-TREE-20250924.txt b/docs/REPO-TREE-20250924.txt
+index 8e6541c..c50040a 100644
+--- a/docs/REPO-TREE-20250924.txt
++++ b/docs/REPO-TREE-20250924.txt
+@@ -178,6 +178,8 @@ _backup/theme.ts.20250922-150522
+ _backup/theme.ts.20250922-150605
+ _backup/theme.ts.20250922-150856
+ _backup/theme.ts.20250923-125258
++_bak/CartPanel.tsx.20250923-172702.bak
++_bak/SlideToPay.tsx.20250923-172702.bak
+ _diag/ALL_IN_ONE.txt
+ _diag/DIRS.txt
+ _diag/FILES.txt
+@@ -187,6 +189,13 @@ _diag/README_FIRST.txt
+ _diag/SPOT_READ.txt
+ _diag/_backup-diff/20250923-144959/_diag/patch_tools.ps1
+ _diag/_backup-diff/20250923-150026/pages/index.tsx
++_diag/_backup-diff/20250923-150826/components/CartPanel.tsx
++_diag/_backup-diff/20250923-153141/components/CartPanel.tsx
++_diag/_backup-diff/20250923-153541/components/CartPanel.tsx
++_diag/_backup-diff/20250923-154146/pages/index.tsx
++_diag/_backup-diff/20250923-155016/pages/index.tsx
++_diag/_backup-diff/20250923-155233/pages/index.tsx
++_diag/_backup-diff/20250923-160039/components/CartPanel.tsx
+ _diag/aside_ctx_after.txt
+ _diag/audit-diff-20250922-153757.txt
+ _diag/audit_base/components__CartPanel.tsx
+@@ -257,10 +266,25 @@ components/SlideToConfirm.tsx.bak.elegant
+ components/SlideToConfirm.tsx.bak.premium
+ components/SlideToConfirm.tsx.bak.replace
+ components/SlideToPay.tsx
++components/SlideToPay.tsx.bak
+ components/ThemeProvider.tsx
+ components/TopBar.tsx
+ data/catalog.ts
++docs/CHECKLIST.md
++docs/CONTRACTS.md
+ docs/HANDOFF-20250923.md
++docs/REPO-TREE-20250923.txt
++docs/REPO-TREE-20250924.txt
++docs/SMOKE-TEST.md
++docs/diffs/20250924-013526-glow-qty-start.names.txt
++docs/diffs/20250924-013526-glow-qty-start.patch
++docs/diffs/20250924-013526-glow-qty-start.status.txt
++docs/diffs/20250924-013546-glow-qty-pre-commit.names.txt
++docs/diffs/20250924-013546-glow-qty-pre-commit.patch
++docs/diffs/20250924-013546-glow-qty-pre-commit.status.txt
++docs/sessions/20250924-0135-hotfix-glow-qty-20250924.md
++docs/verify/verify-20250924-013526.txt
++docs/verify/verify-20250924-013546.txt
+ gh-links.txt
+ hooks/useClickSound.ts
+ hooks/useSfxHowler.ts
+@@ -288,5 +312,7 @@ public/sounds/ui-key.mp3
+ public/sw.js
+ styles/globals.css
+ tailwind.config.js
++tools/Handoff-Workflow.ps1
++tools/Verify-Handoff.ps1
+ tsconfig.json
+ tsconfig.tsbuildinfo

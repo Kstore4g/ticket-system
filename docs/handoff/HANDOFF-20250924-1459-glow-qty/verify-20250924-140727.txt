@@ -1,0 +1,3 @@
+== VERIFY: FAIL ==
+ - MISMATCH: lib/layout.ts ? 支払い用の発光/スキン変数ユーティリティ
+ - MISMATCH: tailwind.config.js ? Tailwind に twglow プラグインが登録済み

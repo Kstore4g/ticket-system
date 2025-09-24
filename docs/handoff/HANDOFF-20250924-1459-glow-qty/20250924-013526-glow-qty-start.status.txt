@@ -1,0 +1,21 @@
+## hotfix/glow-qty-20250924
+ M _diag/ALL_IN_ONE.txt
+ M components/CartPanel.tsx.bak
+ M data/catalog.ts
+ M package.json
+?? _bak/
+?? _diag/_backup-diff/20250923-150826/
+?? _diag/_backup-diff/20250923-153141/
+?? _diag/_backup-diff/20250923-153541/
+?? _diag/_backup-diff/20250923-154146/
+?? _diag/_backup-diff/20250923-155016/
+?? _diag/_backup-diff/20250923-155233/
+?? _diag/_backup-diff/20250923-160039/
+?? components/SlideToPay.tsx.bak
+?? docs/CHECKLIST.md
+?? docs/CONTRACTS.md
+?? docs/REPO-TREE-20250923.txt
+?? docs/SMOKE-TEST.md
+?? docs/diffs/
+?? docs/sessions/
+?? tools/
