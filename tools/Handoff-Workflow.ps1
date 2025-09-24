@@ -101,9 +101,9 @@ function Save-Diff{
 
 function Run-Verify{
   $out = "docs/verify/verify-$(_Now).txt"
-  if(Test-Path "./tools/Verify-Handoff.ps1"){
+  if(Test-Path "./tools/Verify-Handoff-Local.ps1"){
     try{
-      pwsh ./tools/Verify-Handoff.ps1 *>&1 | Tee-Object -FilePath $out | Out-Host
+      pwsh ./tools/Verify-Handoff-Local.ps1 *>&1 | Tee-Object -FilePath $out | Out-Host
     } catch {
       $_ | Out-String | Tee-Object -FilePath $out | Out-Host
     }
@@ -134,7 +134,7 @@ function Commit-Changes{
   if(Test-Path 'package.json'){
     $pkg = Get-Content package.json -Raw | ConvertFrom-Json -AsHashtable
     if(-not $pkg.ContainsKey('scripts')){ $pkg['scripts'] = @{} }
-    if(-not $pkg['scripts'].ContainsKey('verify')){ $pkg['scripts']['verify'] = 'pwsh ./tools/Verify-Handoff.ps1' }
+    if(-not $pkg['scripts'].ContainsKey('verify')){ $pkg['scripts']['verify'] = 'pwsh ./tools/Verify-Handoff-Local.ps1' }
     $pkg | ConvertTo-Json -Depth 100 | Set-Content -Path package.json -Encoding UTF8
     git add package.json | Out-Null
   }
