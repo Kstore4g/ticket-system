@@ -1,0 +1,9 @@
+## hotfix/glow-qty-20250924
+ M docs/REPO-TREE-20250924.txt
+?? docs/diffs/20250924-013927-glow-qty-start.names.txt
+?? docs/diffs/20250924-013927-glow-qty-start.patch
+?? docs/diffs/20250924-013927-glow-qty-start.status.txt
+?? docs/diffs/20250924-013950-glow-qty-pre-commit.names.txt
+?? docs/diffs/20250924-013950-glow-qty-pre-commit.patch
+?? docs/sessions/20250924-0139-hotfix-glow-qty-20250924.md
+?? docs/verify/verify-20250924-013927.txt

@@ -1,0 +1,668 @@
+diff --git a/_diag/ALL_IN_ONE.txt b/_diag/ALL_IN_ONE.txt
+index fc3e907..841a83a 100644
+--- a/_diag/ALL_IN_ONE.txt
++++ b/_diag/ALL_IN_ONE.txt
+@@ -1,68 +1,23 @@
+ ==============================
+ = HANDOFF: ALL IN ONE (TXT) =
+ ==============================
+-Generated : 2025-09-23 14:30:32 +09:00
++Generated : 2025-09-23 16:13:08 +09:00
+ Output    : _diag\ALL_IN_ONE.txt
+ 
+ [Env]
+ Node : v22.19.0
+ NPM  : 10.9.3
+-OS   : Windows_NT (PowerShell 7.5.3)
++OS   : Microsoft Windows 11 Pro
+ 
+ [Git]
+ Branch      : hotfix/glow-qty-20250923
+-Last Commit : 036628b 2025-09-23 14:25:13 +0900 IK_PC fix: normalize glow CSS & restore qty badge block; regen ALL_IN_ONE
++Last Commit : 6e685b7 2025-09-23 15:01:01 +0900 IK_PC 郢晢ｽｬ郢ｧ・､郢ｧ・｢郢ｧ・ｦ郢晞メ・ｪ・ｿ隰ｨ・ｴ邵ｲﾂ郢ｧ・ｹ郢晢ｽｩ郢ｧ・､郢・ 
+-Note: .env* 縺ｯ螳牙・縺ｮ縺溘ａ髯､螟悶＠縺ｾ縺呻ｼ亥ｿ・ｦ√↑繧峨≠縺ｨ縺ｧ霑ｽ險假ｼ峨・====================
+-= SPOT_READ (8逡ｪ)   =
+-=====================
+-== tailwind.config.js ==
+-  content: [
+-  plugins: [require("twglow")]
+-
+-== styles/globals.css (glow block) ==
+-/* === glow ring (category/payments) === */
+-.glow-ring{ position:relative; z-index:0; }
+-.glow-ring::after{
+-  content:"";
+-  position:absolute;
+-  inset: calc(-1 * var(--glow-ring-width,2px));
+-  border-radius:9999px;
+-  pointer-events:none;
+-  z-index:1;
+-  box-shadow:
+-    0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)),
+-    0 0 var(--glow-blur,12px) var(--glow-color,rgba(56,189,248,.9));
+-  animation:ring-glow 1.6s ease-in-out infinite;
+-}
+-@keyframes ring-glow{
+-  0%,100%{
+-    box-shadow:
+-      0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)),
+-      0 0 calc(var(--glow-blur,12px)*0.85) var(--glow-color,rgba(56,189,248,.9));
+-  }
+-  50%{
+-    box-shadow:
+-      0 0 0 var(--glow-ring-width,2px) var(--glow-color,rgba(56,189,248,.9)),
+-      0 0 calc(var(--glow-blur,12px)*1.2) var(--glow-color,rgba(56,189,248,.9));
+-  }
+-}
+-
+-/* rectangle glow (inherit radius) */
+-.glow-box{ position: relative; overflow: visible; }
+-.glow-box::after{
+-  content:"";
+-  position:absolute;
+-  inset: calc(-1 * var(--glow-ring-width,2px));
+-  border-radius: inherit;
+-  pointer-events:none;
+-  box-shadow:
+-    0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
+-    0 0 var(--glow-blur,12px) var(--glow-color, rgba(56,189,248,.9));
+-  animation: ring-glow 1.6s ease-in-out infinite;
+-}===============================
+-= KEY FILES (FULL CONTENTS)   =
+-==================================== BEGIN tailwind.config.js =====
++Note: .env* 縺ｯ螳牙・縺ｮ縺溘ａ髯､螟悶＠縺ｾ縺呻ｼ亥ｿ・ｦ√↑繧峨≠縺ｨ縺ｧ霑ｽ險假ｼ峨・+===========================
++= KEY FILES (FULL)   =
++===========================
++===== BEGIN tailwind.config.js =====
+ /** @type {import('tailwindcss').Config} */
+ module.exports = {
+   content: [
+@@ -244,7 +199,10 @@ body {
+     0 0 0 var(--glow-ring-width,2px) var(--glow-color, rgba(56,189,248,.9)),
+     0 0 var(--glow-blur,12px) var(--glow-color, rgba(56,189,248,.9));
+   animation: ring-glow 1.6s ease-in-out infinite;
+-}
++}  
++/* qty badge (ProductCard) */
++.qty-badge{min-width:22px;height:22px;line-height:22px;text-align:center;border-radius:9999px;border:1px solid var(--border);background:var(--badge-bg);color:var(--badge-text);box-shadow:var(--shadow-sm)}
++.qty-badge[data-qty]:not([data-qty="0"]){ background: var(--qty-bg, rgba(34,197,94,.20)); }
+ ===== END styles\globals.css =====
+ 
+ ===== BEGIN lib\theme.ts =====
+@@ -651,8 +609,8 @@ type CartItem = { product: Product; qty: number };
+ 
+ type CartPanelProps = {
+   items: CartItem[];
+-  onInc: (e: React.MouseEvent, id: string) => void;
+-  onDec: (e: React.MouseEvent, id: string) => void;
++  onInc: (id: string) => void;
++  onDec: (id: string) => void;
+   onConfirm: () => void;
+   selectedPay: string;
+   onChangePay: (id: string) => void;
+@@ -740,9 +698,15 @@ export default function CartPanel({
+       </div>
+ 
+       {/* 繧ｫ繝ｼ繝井ｸ隕ｧ */}
+-      <div className="ios-section flex-1 overflow-auto">
+-        {items.length === 0 ? (
+-          <div className="p-3" style={{ color: "var(--text-muted)", fontSize: 12 }}>縺ｾ縺蝠・刀縺後≠繧翫∪縺帙ｓ</div>
++      <div className="ios-section flex-1 overflow-auto flex flex-col">
++  <div className="flex-1 overflow-auto">
++{items.length === 0 ? (
++          <div className="p-3" style={{ color: "var(--text-muted)", fontSize: 12 }}>縺ｾ縺蝠・刀縺後≠繧翫∪縺帙ｓ
++  </div>
++  <div className="ios-sep px-3 py-2">
++    <SlideToConfirm onConfirm={onConfirm} />
++  </div>
++</div>
+         ) : (
+           <ul>
+             {items.map((it, idx) => (
+@@ -752,7 +716,7 @@ export default function CartPanel({
+                 </div>
+                 <button
+                   type="button"
+-                  onClick={(e) => onDec(e, it.product.id)}
++                  onClick={() => onDec(it.product.id)}
+                   className="btn-round-sm"
+                   aria-label={it.product.name + " 繧・縺､貂帙ｉ縺・}
+                   style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
+@@ -760,7 +724,7 @@ export default function CartPanel({
+                 <div className="text-center" style={{ width: LAYOUT.cartQtyWidthPx, fontSize: LAYOUT.cartQtyFontPx }}>{it.qty}</div>
+                 <button
+                   type="button"
+-                  onClick={(e) => onInc(e, it.product.id)}
++                  onClick={() => onInc(it.product.id)}
+                   className="btn-round-sm"
+                   aria-label={it.product.name + " 繧・縺､蠅励ｄ縺・}
+                   style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
+@@ -772,10 +736,14 @@ export default function CartPanel({
+       </div>
+ 
+       {/* 蜷郁ｨ・& 繧ｹ繝ｩ繧､繝画ｱｺ貂・*/}
+-      <div className="ios-section px-3 py-2 flex items-center justify-between">
+-        <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>ﾂ･{total.toLocaleString()}</span>
+-        <SlideToConfirm onConfirm={onConfirm} />
+-      </div>
++      /* 蜷郁ｨ・& 繧ｹ繝ｩ繧､繝画ｱｺ貂茨ｼ亥・髮｢・・*/
++<div className="ios-section px-3 py-2 flex items-center justify-between">
++  <span className="text-sm" style={{ fontSize: LAYOUT.totalsLabelPx, color: 'var(--text-muted)' }}>蜷郁ｨ・/span>
++  <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>ﾂ･{total.toLocaleString()}</span>
++</div>
++<div className="ios-section px-3 py-2">
++  <SlideToConfirm onConfirm={onConfirm} />
++</div>
+     </div>
+   );
+ }
+@@ -882,6 +850,272 @@ export default function ProductCard({ product, qty = 0, onAdd }: ProductCardProp
+ 
+ ===== END components\ProductCard.tsx =====
+ 
++===== BEGIN components\SlideToConfirm.tsx =====
++import React, { useRef, useState, useEffect } from "react";
++import { LAYOUT } from "../lib/layout";
++
++type SlideToConfirmProps = {
++  onConfirm: () => void;
++  disabled?: boolean;
++  label?: string;
++  className?: string;
++};
++
++export default function SlideToConfirm({
++  onConfirm, disabled = false, label = "繧ｹ繝ｩ繧､繝峨＠縺ｦ豎ｺ貂・, className = "",
++}: SlideToConfirmProps) {
++  const trackRef = useRef<HTMLDivElement | null>(null);
++  const knobRef = useRef<HTMLButtonElement | null>(null);
++  const [dragging, setDragging] = useState(false);
++  const [pos, setPos] = useState(0);
++  const [pointerId, setPointerId] = useState<number | null>(null);
++  const [trackW, setTrackW] = useState(0);
++
++  const knobPx   = LAYOUT.slideKnobPx;
++  const confirmAt= LAYOUT.slideConfirmAt;
++  const insetL   = LAYOUT.slideInsetStartPx;
++  const insetR   = LAYOUT.slideInsetEndPx;
++
++  const maxRange = Math.max(0, trackW - knobPx - insetL - insetR);
++
++  useEffect(() => {
++    const updateW = () => setTrackW(trackRef.current?.clientWidth || 0);
++    updateW(); window.addEventListener("resize", updateW); return () => window.removeEventListener("resize", updateW);
++  }, []);
++
++  const clamp = (v:number,min:number,max:number)=>Math.max(min,Math.min(max,v));
++  const updateByClientX = (clientX:number) => {
++    if (!trackRef.current) return;
++    const rect = trackRef.current.getBoundingClientRect();
++    const rel = clamp(clientX - (rect.left + insetL), 0, maxRange);
++    setPos(rel / (maxRange || 1));
++  };
++
++  useEffect(() => {
++    const onPointerMove = (e: PointerEvent) => { if (!dragging) return; e.preventDefault(); e.stopPropagation(); updateByClientX(e.clientX); };
++    const onPointerUp   = (e: PointerEvent) => {
++      if (!dragging) return; e.preventDefault(); e.stopPropagation();
++      if (pointerId !== null && knobRef.current?.hasPointerCapture(pointerId)) { knobRef.current.releasePointerCapture(pointerId); }
++      setDragging(false);
++      if (pos >= confirmAt && !disabled) { setPos(1); onConfirm(); } else { setPos(0); }
++    };
++    window.addEventListener("pointermove", onPointerMove, { passive: false });
++    window.addEventListener("pointerup", onPointerUp, { passive: false });
++    return () => { window.removeEventListener("pointermove", onPointerMove); window.removeEventListener("pointerup", onPointerUp); };
++  }, [dragging, pos, disabled, onConfirm, pointerId, maxRange]);
++
++  const startDrag = (e: React.PointerEvent) => {
++    e.preventDefault(); e.stopPropagation();
++    setDragging(true); setPointerId(e.pointerId);
++    knobRef.current?.setPointerCapture(e.pointerId);
++    updateByClientX(e.clientX);
++  };
++
++  const knobLeftPx = insetL + pos * maxRange;
++  const fillW = Math.max(knobLeftPx + knobPx, knobPx);
++
++  return (
++    <div className={"w-full select-none " + (disabled ? "opacity-50 pointer-events-none " : "") + (className || "")}>
++      <div
++        ref={trackRef}
++        className="relative h-11 w-full rounded-full overflow-hidden"
++        aria-label={label}
++        style={{
++          background: "linear-gradient(to bottom, var(--surface), var(--surface-elev))",
++          border: "1px solid var(--border)",
++          boxShadow: "var(--shadow-sm)"
++        }}
++      >
++        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ color: "var(--text-muted)", fontSize: LAYOUT.slideLabelPx }}>
++          {label}
++        </div>
++
++        <div className="absolute top-0 left-0 h-full" style={{ width: fillW, background: "var(--slider-fill)" }} />
++
++        <button
++          ref={knobRef}
++          type="button"
++          className="absolute top-1/2 -translate-y-1/2 ui-tap ui-focus"
++          style={{
++            width: knobPx, height: knobPx, left: knobLeftPx, borderRadius: "9999px",
++            background: "linear-gradient(to bottom, var(--knob-start), var(--knob-end))",
++            border: "1px solid var(--border)",
++            boxShadow: "var(--shadow-sm)"
++          }}
++          onPointerDown={startDrag}
++          aria-label={label}
++        />
++      </div>
++    </div>
++  );
++}
++
++===== END components\SlideToConfirm.tsx =====
++
++===== BEGIN components\SlideToPay.tsx =====
++"use client";
++import React, { useCallback, useEffect, useRef, useState } from "react";
++
++export type SlideToPayProps = {
++  onConfirm: () => void | Promise<void>;
++  disabled?: boolean;
++  thresholdPct?: number;    // 譌｢螳・90
++  heightPx?: number;        // 譌｢螳・44
++  knobPx?: number;          // 譌｢螳・32
++  label?: string;           // 繝医Λ繝・け蜀・・譯亥・譁・+  confirmLabel?: string;    // 縺励″縺・､蛻ｰ驕疲凾縺ｮ譯亥・譁・+  className?: string;       // 霑ｽ蜉縺ｮ繧ｯ繝ｩ繧ｹ
++  style?: React.CSSProperties;
++  resetAfterConfirm?: boolean; // 譌｢螳・true・育匱轣ｫ蠕後↓0%縺ｸ謌ｻ縺呻ｼ・+};
++
++export const SlideToPay: React.FC<SlideToPayProps> = ({
++  onConfirm,
++  disabled = false,
++  thresholdPct = 90,
++  heightPx = 44,
++  knobPx = 32,
++  label = "繧ｹ繝ｩ繧､繝峨＠縺ｦ豎ｺ貂・,
++  confirmLabel = "髮｢縺励※遒ｺ螳・,
++  className = "",
++  style,
++  resetAfterConfirm = true,
++}) => {
++  const trackRef = useRef<HTMLDivElement>(null);
++  const [trackW, setTrackW] = useState(0);
++  const [pct, setPct] = useState(0);           // 0..100
++  const pctRef = useRef(0);
++  const dragging = useRef(false);
++
++  const updatePct = (p: number) => { const v = Math.max(0, Math.min(100, p)); pctRef.current = v; setPct(v); };
++
++  // 繝医Λ繝・け蟷・ｒ逶｣隕厄ｼ医ヮ繝紋ｽ咲ｽｮ/蝪励ｊ蟷・・邂怜・縺ｫ菴ｿ逕ｨ・・+  useEffect(() => {
++    const el = trackRef.current;
++    if (!el) return;
++    const ro = new ResizeObserver(() => setTrackW(el.clientWidth));
++    setTrackW(el.clientWidth);
++    ro.observe(el);
++    return () => ro.disconnect();
++  }, []);
++
++  const effectiveWidth = Math.max(0, trackW - knobPx);     // 繝弱ヶ縺後・縺ｿ蜃ｺ縺輔↑縺・庄蜍募沺
++  const knobLeftPx = Math.round((pct / 100) * effectiveWidth);
++  const fillWidthPx = Math.max(0, knobLeftPx + knobPx);
++
++  const toPctFromClientX = (clientX: number) => {
++    const el = trackRef.current;
++    if (!el) return pctRef.current;
++    const rect = el.getBoundingClientRect();
++    const x = clientX - rect.left - knobPx / 2;            // 繝弱ヶ荳ｭ蠢・渕貅・+    const ratio = x / Math.max(1, rect.width - knobPx);
++    return Math.max(0, Math.min(1, ratio)) * 100;
++  };
++
++  const endDrag = useCallback(async () => {
++    if (!dragging.current) return;
++    dragging.current = false;
++    const finalPct = pctRef.current;
++    if (finalPct >= thresholdPct && !disabled) {
++      updatePct(100);
++      try { await onConfirm(); } finally {
++        if (resetAfterConfirm) updatePct(0);
++      }
++    } else {
++      // 縺励″縺・､譛ｪ貅縺ｯ謌ｻ縺・+      updatePct(0);
++    }
++  }, [onConfirm, thresholdPct, disabled, resetAfterConfirm]);
++
++  const onPointerDown = (e: React.PointerEvent) => {
++    if (disabled) return;
++    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
++    dragging.current = true;
++    updatePct(toPctFromClientX(e.clientX));
++  };
++  const onPointerMove = (e: React.PointerEvent) => {
++    if (!dragging.current || disabled) return;
++    updatePct(toPctFromClientX(e.clientX));
++  };
++  const onPointerUp = () => endDrag();
++
++  const onKeyDown = (e: React.KeyboardEvent) => {
++    if (disabled) return;
++    if (e.key === "ArrowRight") { e.preventDefault(); updatePct(pctRef.current + 5); }
++    if (e.key === "ArrowLeft")  { e.preventDefault(); updatePct(pctRef.current - 5); }
++    if (e.key === "Home")       { e.preventDefault(); updatePct(0); }
++    if (e.key === "End")        { e.preventDefault(); updatePct(100); }
++    if (e.key === "Enter" || e.key === " ") {
++      e.preventDefault();
++      if (pctRef.current >= thresholdPct) { endDrag(); } else { updatePct(thresholdPct); }
++    }
++  };
++
++  const reached = pct >= thresholdPct;
++  const ariaNow = Math.round(pct);
++
++  return (
++    <div
++      ref={trackRef}
++      className={
++        "relative rounded-full select-none shadow-sm ios-section " +
++        (disabled ? "opacity-60 pointer-events-none " : "ui-focus cursor-pointer ") +
++        className
++      }
++      style={{
++        height: heightPx,
++        background: "var(--slider-track)",
++        ...style,
++      }}
++      role="slider"
++      aria-valuemin={0}
++      aria-valuemax={100}
++      aria-valuenow={ariaNow}
++      aria-disabled={disabled || undefined}
++      tabIndex={disabled ? -1 : 0}
++      onPointerDown={onPointerDown}
++      onPointerMove={onPointerMove}
++      onPointerUp={onPointerUp}
++      onKeyDown={onKeyDown}
++    >
++      {/* 蝪励ｊ・磯ｲ謐暦ｼ・*/}
++      <div
++        className="absolute left-0 top-0 h-full rounded-full"
++        style={{
++          width: fillWidthPx,
++          background: "var(--slider-fill)",
++          transition: dragging.current ? "none" : "width .15s ease",
++        }}
++      />
++      {/* 繝弱ヶ */}
++      <div
++        className={"absolute top-1/2 rounded-full border " + (reached ? "glow-ring border-2" : "")}
++        style={{
++          left: knobLeftPx,
++          width: knobPx,
++          height: knobPx,
++          transform: "translateY(-50%)",
++          background: "linear-gradient(180deg, var(--knob-start), var(--knob-end))",
++          borderColor: "var(--border)",
++          boxShadow: "var(--shadow-sm)",
++          transition: dragging.current ? "none" : "left .15s ease",
++          // 逋ｺ蜈峨・濶ｲ・域里螳壹・ --accent縲ＱaymentGlow 繧剃ｽｿ縺・ｴ蜷医・螟悶°繧・--glow-color 繧剃ｸ頑嶌縺榊庄閭ｽ・・+          ["--glow-color" as any]: "var(--accent)",
++        }}
++      />
++      {/* 繝ｩ繝吶Ν */}
++      <div className="absolute inset-0 grid place-items-center pointer-events-none">
++        <span className="text-[13px] text-[color:var(--chip-text)]">
++          {reached ? confirmLabel : label}
++        </span>
++      </div>
++    </div>
++  );
++};
++
++export default SlideToPay;
++===== END components\SlideToPay.tsx =====
++
+ ===== BEGIN pages\index.tsx =====
+ import React, { useMemo, useState } from "react";
+ import ProductCard from "../components/ProductCard";
+@@ -889,8 +1123,6 @@ import CartPanel from "../components/CartPanel";
+ import { LAYOUT } from "../lib/layout";
+ import { categories, products, type Product as ProductType } from "../data/catalog";
+ import { GLOW_THEME } from "../lib/theme";
+-import { qtyActiveVars } from "../lib/theme";
+-
+ type Item = { product: ProductType; qty: number };
+ const isUrl = (s?: string) => !!s && /^(https?:)?\/\//.test(s);
+ 
+@@ -910,7 +1142,10 @@ export default function HomePage() {
+   };
+   const onInc = (id: string) => setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: it.qty + 1 } : it)));
+   const onDec = (id: string) =>
+-    setItems((prev) => prev.map((it) => (it.product.id === id ? { ...it, qty: Math.max(0, it.qty - 1) } : it))).filter((it) => it.qty > 0);
++  setItems((prev) => {
++    const next = prev.map((it) => (it.product.id === id ? { ...it, qty: Math.max(0, it.qty - 1) } : it));
++return next.filter((it) => it.qty > 0);
++  });
+   const onConfirm = () => { alert("豎ｺ貂育｢ｺ螳夲ｼ・ + selectedPay + "・・); setItems([]); };
+   const getQty = (id: string) => items.find((it) => it.product.id === id)?.qty ?? 0;
+ 
+@@ -996,3 +1231,4 @@ export default function HomePage() {
+ 
+ ===== END pages\index.tsx =====
+ 
++RESULT: OK - ALL_IN_ONE regenerated
+diff --git a/components/CartPanel.tsx.bak b/components/CartPanel.tsx.bak
+index ee61e05..077e201 100644
+--- a/components/CartPanel.tsx.bak
++++ b/components/CartPanel.tsx.bak
+@@ -1,122 +1,56 @@
+-import React, { useEffect, useRef, useState } from "react";
+-
+-type Product = { id: number; name: string; price: number };
+-type CartItem = { product: Product; qty: number };
+-
+-type Props = {
+-  items: CartItem[];
+-  onInc: (id: number) => void;
+-  onDec: (id: number) => void;
+-  onConfirm: () => void;
+-  getIcon?: (id: number) => string; // 竊・蝠・刀ID縺九ｉ繧ｫ繝・ざ繝ｪ繧｢繧､繧ｳ繝ｳ繧貞叙蠕・-};
+-
+-export default function CartPanel({ items, onInc, onDec, onConfirm, getIcon }: Props) {
+-  const total = items.reduce((s, it) => s + it.product.price * it.qty, 0);
+-
+-  // --- slide to pay ---
+-  const trackRef = useRef<HTMLDivElement>(null);
+-  const [dragging, setDragging] = useState(false);
+-  const [pos, setPos] = useState(0); // 0..1
+-
+-  useEffect(() => { if (items.length === 0) setPos(0); }, [items.length]);
+-
+-  const onPointerDown = (e: React.PointerEvent) => {
+-    if (items.length === 0) return;
+-    setDragging(true);
+-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+-  };
+-  const onPointerMove = (e: React.PointerEvent) => {
+-    if (!dragging) return;
+-    const track = trackRef.current; if (!track) return;
+-    const rect = track.getBoundingClientRect();
+-    let x = e.clientX - rect.left;
+-    x = Math.max(0, Math.min(x, rect.width));
+-    setPos(x / rect.width);
+-  };
+-  const endDrag = () => {
+-    if (!dragging) return;
+-    setDragging(false);
+-    if (pos >= 0.9) { // 90% 縺ｾ縺ｧ繧ｹ繝ｩ繧､繝峨〒遒ｺ螳・-      setPos(1);
+-      onConfirm();
+-      setTimeout(() => setPos(0), 250);
+-    } else {
+-      setPos(0);
+-    }
+-  };
+-
+-  return (
+-    <div className="rounded-2xl bg-white shadow p-3">
+-      <div className="font-semibold mb-2">豕ｨ譁・/div>
++                  <div className="btn-radio-label" style={{ fontSize: LAYOUT.paymentLabelPx }}>{m.name}</div>
++                </button>
++              );
++            })}
++          </div>
++        </div>
++      </div>
+ 
+-      {items.length === 0 ? (
+-        <p className="text-sm opacity-70">驕ｸ謚槭＠縺溷膚蜩√・縺ｾ縺縺ゅｊ縺ｾ縺帙ｓ</p>
+-      ) : (
+-        <ul className="space-y-2">
+-          {items.map(({ product, qty }) => (
+-            <li key={product.id} className="flex items-center justify-between gap-2">
+-              <div className="flex items-center gap-2 min-w-0">
+-                {/* 繧ｫ繝・ざ繝ｪ繧｢繧､繧ｳ繝ｳ・亥・逵滉ｽ咲ｽｮ縺ｫ陦ｨ遉ｺ・・*/}
+-                <div className="w-7 h-7 rounded-full bg-gray-100 grid place-items-center text-lg shrink-0">
+-                  <span>{getIcon?.(product.id) ?? "寫・・}</span>
++      {/* 繧ｫ繝ｼ繝井ｸ隕ｧ */}
++      <div className="ios-section flex-1 overflow-auto">
++        {items.length === 0 ? (
++          <div className="p-3" style={{ color: "var(--text-muted)", fontSize: 12 }}>縺ｾ縺蝠・刀縺後≠繧翫∪縺帙ｓ</div>
++        ) : (
++          <ul>
++            {items.map((it, idx) => (
++              <li key={it.product.id} className={"px-3 py-2 " + (idx > 0 ? "ios-sep " : "") + "flex items-center gap-2"}>
++                <div className="flex-1 min-w-0">
++                  <div className="truncate" style={{ fontSize: LAYOUT.cartItemNamePx }}>{it.product.name}</div>
+                 </div>
+-                <div className="min-w-0">
+-                  <div className="truncate">{product.name}</div>
+-                  <div className="text-xs opacity-70">ﾂ･{product.price.toLocaleString()}</div>
+-                </div>
+-              </div>
+-
+-              {/* 繧ｳ繝ｳ繝代け繝医↑ +/- */}
+-              <div className="flex items-center gap-1 shrink-0">
+                 <button
+-                  aria-label="dec"
+-                  onClick={() => onDec(product.id)}
+-                  className="w-6 h-6 rounded-full bg-gray-200 grid place-items-center text-sm leading-none select-none"
+-                >
+-                  竏・-                </button>
+-                <span className="w-6 text-center tabular-nums">{qty}</span>
++                  type="button"
++                  onClick={() => onDec(it.product.id)}
++                  className="btn-round-sm"
++                  aria-label={it.product.name + " 繧・縺､貂帙ｉ縺・}
++                  style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
++                >竏・/button>
++                <div className="text-center" style={{ width: LAYOUT.cartQtyWidthPx, fontSize: LAYOUT.cartQtyFontPx }}>{it.qty}</div>
+                 <button
+-                  aria-label="inc"
+-                  onClick={() => onInc(product.id)}
+-                  className="w-6 h-6 rounded-full bg-gray-200 grid place-items-center text-sm leading-none select-none"
+-                >
+-                  ・・-                </button>
+-              </div>
+-            </li>
+-          ))}
+-        </ul>
+-      )}
+-
+-      <hr className="my-3" />
+-
+-      <div className="flex items-center justify-between mb-2">
+-        <div className="font-semibold">蜷郁ｨ・/div>
+-        <div>ﾂ･{total.toLocaleString()}</div>
++                  type="button"
++                  onClick={() => onInc(it.product.id)}
++                  className="btn-round-sm"
++                  aria-label={it.product.name + " 繧・縺､蠅励ｄ縺・}
++                  style={{ width: LAYOUT.plusMinusPx, height: LAYOUT.plusMinusPx, fontSize: LAYOUT.plusMinusFontPx }}
++                >・・/button>
++              </li>
++            ))}
++          </ul>
++        )}
+       </div>
+-
+-      {/* --- 荳矩Κ・壹せ繝ｩ繧､繝峨＠縺ｦ豎ｺ貂・--- */}
+-      <div
+-        ref={trackRef}
+-        className={`relative h-12 rounded-xl ${items.length === 0 ? "bg-gray-200 opacity-60" : "bg-gray-100"}`}
+-        onPointerMove={onPointerMove}
+-        onPointerUp={endDrag}
+-        onPointerCancel={endDrag}
+-      >
+-        <div className="absolute inset-0 grid place-items-center pointer-events-none text-sm text-gray-600">
+-          {items.length === 0 ? "繧ｫ繝ｼ繝医′遨ｺ縺ｧ縺・ : "繧ｹ繝ｩ繧､繝峨＠縺ｦ豎ｺ貂・}
+-        </div>
+-
+-        <div
+-          onPointerDown={onPointerDown}
+-          className="absolute top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black text-white grid place-items-center touch-none select-none"
+-          style={{ left: `calc(${(pos * 100).toFixed(1)}% - 20px)` }}
+-        >
+-          笆ｶ
++        {/* 蜷郁ｨ茨ｼ亥､ｧ繝悶Ο繝・け縺ｮ譛荳矩Κ・・*/}
++        <div className="ios-sep px-3 py-2 flex items-center justify-between">
++          <span className="text-sm" style={{ fontSize: LAYOUT.totalsLabelPx, color: 'var(--text-muted)' }}>蜷郁ｨ・/span>
++          <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>ﾂ･{total.toLocaleString()}</span>
+         </div>
++            {/* 繧ｹ繝ｩ繧､繝繝ｼ・育峡遶九ヶ繝ｭ繝・け・・*/}
++      <div className="ios-section px-3 py-3">
++        <SlideToPay onConfirm={onConfirm} />
+       </div>
+-    </div>
++</div>
++      {/* 蜷郁ｨ・& 繧ｹ繝ｩ繧､繝画ｱｺ貂・*/}<div className="ios-section px-3 py-2 flex items-center justify-between">
++  <span className="text-sm" style={{ fontSize: LAYOUT.totalsLabelPx, color: 'var(--text-muted)' }}>蜷郁ｨ・/span>
++  <span className="font-semibold" style={{ fontSize: LAYOUT.totalsValuePx }}>ﾂ･{total.toLocaleString()}</span>
++</div>
++</div>
+   );
+-}
++}
+\ No newline at end of file
+diff --git a/data/catalog.ts b/data/catalog.ts
+index fd7c5b2..58fff05 100644
+--- a/data/catalog.ts
++++ b/data/catalog.ts
+@@ -29,18 +29,21 @@ export type DataSet = {
+ 
+ /** 縺ｲ縺ｪ蝙九ョ繝ｼ繧ｿ・医％縺薙ｒ譖ｸ縺肴鋤縺医ｌ縺ｰ UI 縺ｫ蜊ｳ蜿肴丐・・*/
+ export const categories: Category[] = [
+-  { id: "set",    name: "繧ｻ繝・ヨ",  icon: "鵠" },
+-  { id: "single", name: "蜊伜刀",    icon: "此" },
++  { id: "Burger", name: "繝舌・繧ｬ繝ｼ",    icon: "鵠" },
++  { id: "RiceBurger", name: "繝ｩ繧､繧ｹ繝舌・繧ｬ繝ｼ",    icon: "鵠" },
+   { id: "drink",  name: "繝峨Μ繝ｳ繧ｯ", icon: "･､" },
++  { id: "side",    name: "繧ｵ繧､繝・,  icon: "此" },
+ ];
+ 
+ export const products: Product[] = [
+   { id: "1", categoryId: "set",    name: "A繧ｻ繝・ヨ",   price: 1500, cost: 200, allergy: ["蟆城ｺｦ","荵ｳ"] },
+   { id: "2", categoryId: "set",    name: "B繧ｻ繝・ヨ", price: 1600, cost: 250, allergy: ["蟆城ｺｦ","荵ｳ"] },
+-  { id: "3", categoryId: "single", name: "繝昴ユ繝・,         price: 300, cost: 80  },
++  { id: "3", categoryId: "side", name: "繝昴ユ繝・,         price: 300, cost: 80  },
+   { id: "4", categoryId: "drink",  name: "繝峨Μ繝ｳ繧ｯ",       price: 200, cost: 50  },
+-  { id: "5", categoryId: "single", name: "繝上Φ繝舌・繧ｬ繝ｼ",         price: 300, cost: 80  },
+-  { id: "6", categoryId: "single",  name: "繝√・繧ｺ繝舌・繧ｬ繝ｼ",       price: 200, cost: 50  },
++  { id: "5", categoryId: "Burger", name: "繝上Φ繝舌・繧ｬ繝ｼ",         price: 300, cost: 80 , allergy: ["蟆城ｺｦ","荵ｳ"] },
++  { id: "6", categoryId: "Burger",  name: "繝√・繧ｺ繝舌・繧ｬ繝ｼ",       price: 200, cost: 50 , allergy: ["蟆城ｺｦ","荵ｳ"]},
++  { id: "7", categoryId: "RiceBurger", name: "繝ｩ繧､繧ｹ繝舌・繧ｬ繝ｼ",         price: 300, cost: 80 , allergy: ["蟆城ｺｦ","荵ｳ"] },
++  { id: "8", categoryId: "RiceBurger",  name: "繝ｩ繧､繧ｹ繝√・繧ｺ繝舌・繧ｬ繝ｼ",       price: 200, cost: 50 , allergy: ["蟆城ｺｦ","荵ｳ"]},
+ ];
+ 
+ /** 陬懷勧髢｢謨ｰ */
+diff --git a/package.json b/package.json
+index 9e6943e..7037847 100644
+--- a/package.json
++++ b/package.json
+@@ -10,7 +10,9 @@
+     "start": "next start",
+     "prisma:migrate": "prisma migrate dev",
+     "prisma:studio": "prisma studio",
+-    "verify": "pwsh ./tools/Verify-Handoff.ps1"
++    "verify": "pwsh ./tools/Verify-Handoff.ps1",
++    "work:load": "pwsh -NoLogo -NoProfile -Command \". ./tools/Handoff-Workflow.ps1; Show-Status\"",
++    "work:verify": "pwsh -NoLogo -NoProfile -Command \". ./tools/Handoff-Workflow.ps1; Run-Verify\""
+   },
+   "repository": {
+     "type": "git",

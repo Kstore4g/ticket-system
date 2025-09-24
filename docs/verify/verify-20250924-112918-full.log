@@ -1,7 +1,0 @@
-
-> ticket-system@1.0.0 verify
-> pwsh ./tools/Verify-Handoff.ps1
-
-== VERIFY: FAIL ==
- - MISMATCH: lib/layout.ts ? 支払い用の発光/スキン変数ユーティリティ
- - MISMATCH: tailwind.config.js ? Tailwind に twglow プラグインが登録済み
