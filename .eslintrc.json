@@ -1,0 +1,4 @@
+{
+  "root": true,
+  "ignorePatterns": ["_backup/**", "_diag/**", "docs/**", "**/*.bak", "**/*.bak.*"]
+}

@@ -20,10 +20,29 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
+    "pages/**/*.ts",
+    "pages/**/*.tsx",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "hooks/**/*.ts",
+    "hooks/**/*.tsx",
+    "data/**/*.ts",
+    "styles/**/*.ts",
+    "styles/**/*.tsx",
+    "styles/**/*.css",
+    "*.ts",
+    "*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "_backup",
+    "_diag",
+    "docs",
+    "**/*.bak",
+    "**/*.bak.*",
+    ".next",
+    ".turbo"
   ]
 }
