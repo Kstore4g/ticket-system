@@ -116,9 +116,9 @@ export const PAY_SKIN: { default: PaySkinSpec; byKey: Record<string, PaySkinSpec
 export const payGroupVars = (key?: string): Record<string,string> => {
   const k = (key ?? "").toLowerCase();
   const spec = (k && PAY_SKIN.byKey[k]) || PAY_SKIN.default;
-  const out: any = {};
+  const out: Record<string,string> = {};
   if (spec.groupBgImage) out["--group-bg-image"] = `url('${spec.groupBgImage}')`;
   if (spec.groupBgSize)  out["--group-bg-size"]  = spec.groupBgSize!;
   if (spec.groupBgPos)   out["--group-bg-pos"]   = spec.groupBgPos!;
-  return out as Record<string,string>;
+  return out;
 };
