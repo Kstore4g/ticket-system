@@ -1,0 +1,19 @@
+
+> ticket-system@1.0.0 build
+> next build
+
+   笆ｲ Next.js 15.5.3
+
+   Linting and checking validity of types ...
+Failed to compile.
+
+./_backup/20250921-181721/index.tsx:2:20
+Type error: Cannot find module '../components/TopBar' or its corresponding type declarations.
+
+  1 | import React, { useMemo, useState } from "react";
+> 2 | import TopBar from "../components/TopBar";
+    |                    ^
+  3 | import CategoryDock from "../components/CategoryDock";
+  4 | import CartPanel from "../components/CartPanel";
+  5 |
+Next.js build worker exited with code: 1 and signal: null
